@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da56252d28634de42a598ee9374889f1, type: 3}
+  m_Name: 2_spedy
+  m_EditorClassIdentifier: 
+  Kind: 0
+  Name: "\u30B9\u30D4\u30C7\u30A3"
+  Introduct: "\u6570\u5341\u79D2\u9593\u3001\u79FB\u52D5\u901F\u5EA6\u304C\u4E0A\u6607\u3059\u308B\\n\u3053\u306E\u52B9\u679C\u306F\u91CD\u8907\u3057\u306A\u3044"
+  NeedMP: 3
+  NeedOrbs:
+    green: 3
+    red: 0
+    blue: 2
+  ID: 2
+  PlusDamage: 6
+  HealPoint: 0
+  Timer: 30
+  SkillLevel: 1
+  LimitLevel: 1
+  EffectObject: {fileID: 677900146989408252, guid: ad517fa58cd0aa74ab1ecb94f21250da, type: 3}
+  SpawnPos: {fileID: 0}
+  Light: {fileID: 0}
+  LightPos: {x: 0, y: 0, z: 0}
+  LevelUpPlusDamage: 2
+  LevelUpTimer: 4

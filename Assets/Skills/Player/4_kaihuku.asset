@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da56252d28634de42a598ee9374889f1, type: 3}
+  m_Name: 4_kaihuku
+  m_EditorClassIdentifier: 
+  Kind: 1
+  Name: "\u30AB\u30A4\u30D5\u30AF"
+  Introduct: "\u5C11\u3057\u56DE\u5FA9\u3067\u304D\u308B"
+  NeedMP: 0
+  NeedOrbs:
+    green: 5
+    red: 0
+    yellow: 0
+  ID: 4
+  PlusDamage: 0
+  HealPoint: 80
+  Timer: 30
+  SkillLevel: 0
+  LimitLevel: 1
+  EffectObject: {fileID: 0}
+  SpawnPos: {fileID: 0}
+  Light: {fileID: 0}
+  LightPos: {x: 0, y: 0, z: 0}
+  aaaaaaaaaaaaaaaaaaa: 
+  LevelUpPlusDamage: 10
+  LevelUpTimer: 4

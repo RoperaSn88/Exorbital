@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da56252d28634de42a598ee9374889f1, type: 3}
+  m_Name: 3_buffe
+  m_EditorClassIdentifier: 
+  Kind: 0
+  Name: "\u30D0\u30C3\u30D5\u30FC"
+  Introduct: "\u6570\u5341\u79D2\u9593\u3001\u653B\u6483\u529B\u304C\u4E0A\u6607\u3059\u308B\\n\u3053\u306E\u52B9\u679C\u306F\u91CD\u8907\u3057\u306A\u3044"
+  NeedMP: 5
+  NeedOrbs:
+    green: 0
+    red: 4
+    blue: 2
+  ID: 3
+  PlusDamage: 0
+  HealPoint: 0
+  Timer: 30
+  SkillLevel: 0
+  LimitLevel: 1
+  EffectObject: {fileID: 2865874303901053541, guid: 6101dd5177b81a4438ecf5231013f6ba, type: 3}
+  SpawnPos: {fileID: 0}
+  Light: {fileID: 0}
+  LightPos: {x: 0, y: 0, z: 0}
+  LevelUpPlusDamage: 2
+  LevelUpTimer: 4

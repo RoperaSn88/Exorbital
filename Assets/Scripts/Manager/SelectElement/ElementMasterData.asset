@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d811035eb1514c95b5c313da652e0454, type: 3}
+  m_Name: ElementMasterData
+  m_EditorClassIdentifier: 
+  _elements:
+  - _elementKind: 0
+    _elementName: "\u306A\u3057"
+    _elementDescription: "\u306A\u306B\u3082\u52B9\u679C\u3092\u6301\u305F\u306A\u3044\u3001\u901A\u5E38\u72B6\u614B"
+  - _elementKind: 1
+    _elementName: "\u708E"
+    _elementDescription: "\u81EA\u7136\u5C5E\u6027\u306B\u5F37\u304F\u3001\u6C34\u5C5E\u6027\u306B\u5F31\u3044\u5C5E\u6027\n3\u79D2\u3054\u3068\u306B<sprite
+      name=\"stone-sprite_1\">\u304C1\u3064\u6E1B\u308B"
+  - _elementKind: 2
+    _elementName: "\u6C34"
+    _elementDescription: "\u706B\u5C5E\u6027\u306B\u5F37\u304F\u3001\u81EA\u7136\u5C5E\u6027\u306B\u5F31\u3044\u5C5E\u6027\n3\u79D2\u3054\u3068\u306B<sprite
+      name=\"stone-sprite_2\">\u304C1\u3064\u6E1B\u308B"
+  - _elementKind: 3
+    _elementName: "\u81EA\u7136"
+    _elementDescription: "\u6C34\u5C5E\u6027\u306B\u5F37\u304F\u3001\u706B\u5C5E\u6027\u306B\u5F31\u3044\u5C5E\u6027\n3\u79D2\u3054\u3068\u306B<sprite
+      name=\"stone-sprite_0\">\u304C1\u3064\u6E1B\u308B"

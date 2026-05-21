@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1b8b04c8ff1f62458ba03d93303f682, type: 3}
+  m_Name: green2
+  m_EditorClassIdentifier: 
+  typeKind: 0
+  colorKind: 0
+  Kind: 0
+  valueKind: 0
+  value: 20
+  isLock: 0
+  ExplainText: "HP\u309220\u4E0A\u6607\u3059\u308B"
+  needOrbs:
+    green: 20
+    red: 0
+    blue: 0
+  parentNode: {fileID: 11400000, guid: fe0f87ad9f58c9041b172000cadbf570, type: 2}
+  childNode: {fileID: 11400000, guid: 3cd8b97198d971044bfe28aa39029a80, type: 2}
