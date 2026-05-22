@@ -573,7 +573,7 @@ public class MapGeneraterVer2 : MonoBehaviour
                             //ハズレ出口の元のマップの入口番号
                             int failEndEnterNum = failclass.BaseMap.EnterNum;
                             Vector3 failEndVec = failclass.ExitPos;
-                            Vector3 tmpMapNumber= RematchMapNumber(failEndExitNum,failEndEnterNum,failExitMapNumber, GeneratedMapFail);
+                            Vector3 tmpMapNumber = RematchMapNumber(failEndExitNum, failEndEnterNum, failExitMapNumber, GeneratedMapFail);
 
                             if (TrySelectMapMaterial(MiniEnds, tmpMapNumber, failEndExitNum, Fails, false, out MapBaseScriptVer2 miniEnd))
                             {
@@ -697,7 +697,7 @@ public class MapGeneraterVer2 : MonoBehaviour
 
     // Update is called once per frame
 
-    bool TrySelectMapMaterial(List<MapBaseScriptVer2> materials, Vector3 mapNumber, int trueNum, List<FailLoophoolClass> fails, bool requireNextPoint, out MapBaseScriptVer2 selectedMap)
+    bool TrySelectMapMaterial(List<MapBaseScriptVer2> materials, Vector3 mapNumber, int connectionDirection, List<FailLoophoolClass> failedLoopholes, bool requireNextPoint, out MapBaseScriptVer2 selectedMap)
     {
         List<MapBaseScriptVer2> copyMaterials = new List<MapBaseScriptVer2>(materials);
 
@@ -709,7 +709,7 @@ public class MapGeneraterVer2 : MonoBehaviour
             bool canConnect = false;
             foreach (MapLoopholeVer2 hole in map.Loopholes)
             {
-                if (hole.num == ReverseNum(trueNum))
+                if (hole.num == ReverseNum(connectionDirection))
                 {
                     canConnect = true;
                     break;
@@ -717,8 +717,8 @@ public class MapGeneraterVer2 : MonoBehaviour
             }
             if (!canConnect) continue;
 
-            if (!map.CheckNotCoverMap(MapNumbers, mapNumber, ReverseNum(trueNum), fails)) continue;
-            if (requireNextPoint && !map.CheckCanSetNextPoint(MapNumbers, mapNumber, ReverseNum(trueNum), fails)) continue;
+            if (!map.CheckNotCoverMap(MapNumbers, mapNumber, ReverseNum(connectionDirection), failedLoopholes)) continue;
+            if (requireNextPoint && !map.CheckCanSetNextPoint(MapNumbers, mapNumber, ReverseNum(connectionDirection), failedLoopholes)) continue;
 
             selectedMap = map;
             return true;
