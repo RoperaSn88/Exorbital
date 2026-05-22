@@ -180,25 +180,22 @@ public class MapGeneraterVer2 : MonoBehaviour
             //すべてのマップが生成できなかったら出口を生成する
             if (AllMapCantSet)
             {
-
-                bool checkk = false;
-                CopyMiniEnds = new List<MapBaseScriptVer2>(MiniEnds);
-                foreach (MapBaseScriptVer2 map in CopyMiniEnds)
+                if (TrySelectMapMaterial(MapMaterials, MapNumber, TrueNum, Fails, true, out MapBaseScriptVer2 replaceMap))
                 {
-                    foreach (MapLoopholeVer2 hole in map.Loopholes)
-                    {
-                        if (hole.num == ReverseNum(TrueNum))
-                        {
-                            Debug.Log($"Mini End {map.name}");
-                            SelectMaterial = map;
-                            checkk = true;
-                        }
-                    }
+                    Debug.Log($"Mini End generation skipped. Use settable map {replaceMap.name}");
+                    SelectMaterial = replaceMap;
+                    AllMapCantSet = false;
                 }
+            }
 
-                ///出口を実際に生成する
-                if (checkk)
+            if (AllMapCantSet)
+            {
+                if (TrySelectMapMaterial(MiniEnds, MapNumber, TrueNum, Fails, false, out MapBaseScriptVer2 miniEnd))
                 {
+                    SelectMaterial = miniEnd;
+                    Debug.Log($"Mini End {miniEnd.name}");
+
+                    ///出口を実際に生成する
                     MapBaseScriptVer2 GeneratedMap = Instantiate(SelectMaterial.gameObject, MapParent).GetComponent<MapBaseScriptVer2>();
                     GeneratedMaps.Add(GeneratedMap); // 生成されたマップを追跡
                     Transform LoopHoleVec = transform;
@@ -461,24 +458,19 @@ public class MapGeneraterVer2 : MonoBehaviour
 
                 if (AllMapCantSet)
                 {
-
-                    bool checkk = false;
-                    CopyMiniEnds = new List<MapBaseScriptVer2>(MiniEnds);
-                    foreach (MapBaseScriptVer2 map in CopyMiniEnds)
+                    if (TrySelectMapMaterial(MapMaterials, failMapNumber, TrueNum, Fails, true, out MapBaseScriptVer2 replaceMap))
                     {
-                        foreach (MapLoopholeVer2 hole in map.Loopholes)
-                        {
-                            if (hole.num == ReverseNum(TrueNum))
-                            {
-                                //Debug.Log($"Mini End {map.name}");
-                                SelectMaterial = map;
-                                checkk = true;
-                            }
-                        }
+                        Debug.Log($"Mini End generation skipped. Use settable map {replaceMap.name}");
+                        SelectMaterial = replaceMap;
+                        AllMapCantSet = false;
                     }
-                    //ここいじる必要あり！！！
-                    if (checkk)
+                }
+
+                if (AllMapCantSet)
+                {
+                    if (TrySelectMapMaterial(MiniEnds, failMapNumber, TrueNum, Fails, false, out MapBaseScriptVer2 miniEnd))
                     {
+                        SelectMaterial = miniEnd;
                         MapBaseScriptVer2 GeneratedMap = Instantiate(SelectMaterial.gameObject, MapParent).GetComponent<MapBaseScriptVer2>();
                         GeneratedMaps.Add(GeneratedMap); // 生成されたマップを追跡
                         Transform LoopHoleVec = transform;
@@ -520,7 +512,7 @@ public class MapGeneraterVer2 : MonoBehaviour
                         break;
                     }
                 }
-                else
+                if (!AllMapCantSet)
                 {
                     //普通の生成
                     MapBaseScriptVer2 GeneratedMapFail = Instantiate(SelectMaterial.gameObject, MapParent).GetComponent<MapBaseScriptVer2>();
@@ -581,27 +573,12 @@ public class MapGeneraterVer2 : MonoBehaviour
                             //ハズレ出口の元のマップの入口番号
                             int failEndEnterNum = failclass.BaseMap.EnterNum;
                             Vector3 failEndVec = failclass.ExitPos;
-                            CopyMiniEnds = new List<MapBaseScriptVer2>(MiniEnds);
-                            bool checkk = false;
-                            foreach (MapBaseScriptVer2 map in CopyMiniEnds)
-                            {
-                                foreach (MapLoopholeVer2 hole in map.Loopholes)
-                                {
-                                    if (hole.num == ReverseNum(failEndExitNum))
-                                    {
-                                        // Debug.LogWarning($"Mini End@as@fjogj {failEndExitNum}");
-                                        SelectMaterial = map;
-                                        checkk = true;
-                                        break;
-                                    }
-                                    if (checkk) break;
-                                }
-                            }
+                            Vector3 tmpMapNumber = RematchMapNumber(failEndExitNum, failEndEnterNum, failExitMapNumber, GeneratedMapFail);
 
-                            if (checkk)
+                            if (TrySelectMapMaterial(MiniEnds, tmpMapNumber, failEndExitNum, Fails, false, out MapBaseScriptVer2 miniEnd))
                             {
+                                SelectMaterial = miniEnd;
                                 // Debug.Log($"failEndEnterNum:{failEndEnterNum}, failEndExitNum:{failEndExitNum}");
-                                Vector3 tmpMapNumber= RematchMapNumber(failEndExitNum,failEndEnterNum,failExitMapNumber, GeneratedMapFail);
                                 // Debug.Log($"tmpMapNumber:{tmpMapNumber}");
                                 MapBaseScriptVer2 GeneratedMap = Instantiate(SelectMaterial.gameObject, MapParent).GetComponent<MapBaseScriptVer2>();
                                 GeneratedMaps.Add(GeneratedMap); // 生成されたマップを追跡
@@ -648,23 +625,9 @@ public class MapGeneraterVer2 : MonoBehaviour
                 {
                     //終わりを作る
                     // Debug.Log("終わりを生成");
-                    CopyMiniEnds = new List<MapBaseScriptVer2>(MiniEnds);
-                    bool checkk = false;
-                    foreach (MapBaseScriptVer2 map in CopyMiniEnds)
+                    if (TrySelectMapMaterial(MiniEnds, failMapNumber, TrueNum, Fails, false, out MapBaseScriptVer2 miniEnd))
                     {
-                        foreach (MapLoopholeVer2 hole in map.Loopholes)
-                        {
-                            if (hole.num == ReverseNum(TrueNum))
-                            {
-                                //Debug.Log($"Mini End:{map.name}");
-                                SelectMaterial = map;
-                                checkk = true;
-                            }
-                        }
-                    }
-
-                    if (checkk)
-                    {
+                        SelectMaterial = miniEnd;
                         MapBaseScriptVer2 GeneratedMap = Instantiate(SelectMaterial.gameObject, MapParent).GetComponent<MapBaseScriptVer2>();
                         GeneratedMaps.Add(GeneratedMap); // 生成されたマップを追跡
                         Transform LoopHoleVect = transform;
@@ -733,6 +696,37 @@ public class MapGeneraterVer2 : MonoBehaviour
     }
 
     // Update is called once per frame
+
+    bool TrySelectMapMaterial(List<MapBaseScriptVer2> materials, Vector3 mapNumber, int connectionDirection, List<FailLoophoolClass> failedLoopholes, bool requireNextPoint, out MapBaseScriptVer2 selectedMap)
+    {
+        List<MapBaseScriptVer2> copyMaterials = new List<MapBaseScriptVer2>(materials);
+
+        while (copyMaterials.Count > 0)
+        {
+            MapBaseScriptVer2 map = copyMaterials[UnityEngine.Random.Range(0, copyMaterials.Count)];
+            copyMaterials.Remove(map);
+
+            bool canConnect = false;
+            foreach (MapLoopholeVer2 hole in map.Loopholes)
+            {
+                if (hole.num == ReverseNum(connectionDirection))
+                {
+                    canConnect = true;
+                    break;
+                }
+            }
+            if (!canConnect) continue;
+
+            if (!map.CheckNotCoverMap(MapNumbers, mapNumber, ReverseNum(connectionDirection), failedLoopholes)) continue;
+            if (requireNextPoint && !map.CheckCanSetNextPoint(MapNumbers, mapNumber, ReverseNum(connectionDirection), failedLoopholes)) continue;
+
+            selectedMap = map;
+            return true;
+        }
+
+        selectedMap = null;
+        return false;
+    }
 
     Vector3 RematchMapNumber(int TrueNum,int EnterNum,Vector3 MapNumber,MapBaseScriptVer2 MapBase){
         //Debug.Log($"Rematching:{MapNumber},{TrueNum}");
@@ -877,4 +871,3 @@ public class SpecificMapInfo{
     }
 
 }
-

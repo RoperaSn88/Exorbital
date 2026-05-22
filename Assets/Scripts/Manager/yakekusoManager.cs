@@ -197,7 +197,7 @@ public class yakekusoManager : MonoBehaviour
                             _gameActions.Dispose();
                             StopBGM(2f);
                             yield return new WaitForSeconds(2f);
-                            SceneManager.LoadScene("LouglikeScene");
+                            SceneManager.LoadScene(Scenes[num]);
                             break;
                         }
                         else if ((attentionNum == 1 && _selected) || _canceled)
@@ -217,7 +217,7 @@ public class yakekusoManager : MonoBehaviour
                     continue;
                 }
 
-                if (num == 1)
+                if (num == 2)
                 {
 #if UNITY_EDITOR
                     UnityEditor.EditorApplication.isPlaying = false;//ゲームプレイ終了
@@ -234,12 +234,7 @@ public class yakekusoManager : MonoBehaviour
                     StopBGM(2f);
                     _gameActions.Dispose();
                     yield return new WaitForSeconds(2f);
-                    if (num == 0)
-                    {
-                        if (!staticScript.checkTutorial()) SceneManager.LoadScene(Scenes[num]);
-                        else SceneManager.LoadScene("LouglikeScene");
-                    }
-                    else if(num == 1)SceneManager.LoadScene(Scenes[num]);
+                    SceneManager.LoadScene(Scenes[num]);
                     
                     break;
                 }

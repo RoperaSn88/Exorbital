@@ -22740,7 +22740,7 @@ MonoBehaviour:
   PlayerScene:
     m_SceneName: PlayerSceneVer3
   targetScene:
-    m_SceneName: true_tutorial
+    m_SceneName: sougen
   SceneID: 0
   ScenePairs:
   - Scene:
