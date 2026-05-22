@@ -6,6 +6,15 @@ using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 
+// マップのタイプを定義する列挙型
+public enum MapType
+{
+    Normal,          // 通常マップ（敵生成あり）
+    Safe,           // 安全マップ（敵生成なし）
+    Challenge,      // チャレンジマップ（強敵あり）
+    Treasure        // 宝箱マップ（敵生成なし、宝箱のみ）
+}
+
 public class MapBaseScriptVer2 : MonoBehaviour
 {
     public NeighborClass MapInfo;
@@ -14,6 +23,9 @@ public class MapBaseScriptVer2 : MonoBehaviour
     //抜けれる箇所をリスト化しておく
     //public Transform StartPos;
     //public Transform EndPos;
+
+    [Header("マップタイプ設定")]
+    public MapType mapType = MapType.Normal;
 
     public List<MapLoopholeVer2> Loopholes;
     public List<EnemySpawnClass> EnemySpawnPoses;
@@ -372,6 +384,22 @@ public class MapBaseScriptVer2 : MonoBehaviour
 
 
     //抜け道とマップの位置の計算?
+
+    /// <summary>
+    /// このマップが敵を生成するかどうかを返す
+    /// </summary>
+    public bool ShouldSpawnEnemies()
+    {
+        return mapType == MapType.Normal || mapType == MapType.Challenge;
+    }
+
+    /// <summary>
+    /// このマップが宝箱を生成するかどうかを返す
+    /// </summary>
+    public bool ShouldSpawnTreasures()
+    {
+        return mapType == MapType.Treasure || TreasureSpawnPoses.Count > 0;
+    }
 }
 [System.Serializable]
 public class NeighborClass {
