@@ -33,12 +33,15 @@ public class MapGeneraterVer2 : MonoBehaviour
 
     int TrueNum;
     public List<Vector3> MapNumbers;
-    public List<FailLoophoolClass> Fails; 
+    public List<FailLoophoolClass> Fails;
     public List<MapBaseScriptVer2> CopyMapMaterials;
     public List<MapBaseScriptVer2> CopyMiniEnds;
     private List<MapBaseScriptVer2> CopyChallenges;
     public List<FailLoophoolClass>  EndFails;
-    
+
+    // 生成されたマップのインスタンスを追跡（敵生成用）
+    private List<MapBaseScriptVer2> GeneratedMaps;
+
     public NavMeshSurface NavMesh;
     public Vector3 ReSpawnVec;
 
@@ -52,25 +55,34 @@ public class MapGeneraterVer2 : MonoBehaviour
 
     public IEnumerator GenerateMap()
     {
+        // 生成されたマップのリストを初期化
+        if (GeneratedMaps == null)
+            GeneratedMaps = new List<MapBaseScriptVer2>();
+        else
+            GeneratedMaps.Clear();
+
         List<EnemySpawnClass> EnemySpawns=new List<EnemySpawnClass>();
         List<Transform> TreasureSpawns=new List<Transform>();
         MapBaseScriptVer2 StartMapS = Instantiate(StartMap.gameObject, MapParent).GetComponent<MapBaseScriptVer2>();
         StartMapS.transform.position = Vector3.zero;
+        GeneratedMaps.Add(StartMapS); // 生成されたマップを追跡
         yield return null;
         Vector3 MapNumber=Vector3.zero;
-        
+
         PlayerController.instance.transform.position = StartMapS.StartSpawnPos.position;
         ReSpawnVec=StartMapS.StartSpawnPos.position;
 
         //MapNumbers.Add(MapNumber);
         Vector3 SaveVec = StartMapS.SelectTrueLoophole(MapNumbers,MapNumber,Fails).position;
-        
-        
+
+
         StartMapS.SaveMapNumbers(MapNumbers,MapNumber,TrueNum);
         //次につなげる番号を受けつぐ。スタートが右方向だったら5になるはず。
         TrueNum=StartMapS.TrueNum;
         MapNumber=RematchMapNumber(TrueNum,0,MapNumber,StartMapS);
-        if(StartMapS.EnemySpawnPoses.Count!=0)foreach(EnemySpawnClass trans in StartMapS.EnemySpawnPoses) EnemySpawns.Add(trans);
+        // マップタイプに基づいて敵スポーン位置を収集
+        if(StartMapS.ShouldSpawnEnemies() && StartMapS.EnemySpawnPoses.Count!=0)
+            foreach(EnemySpawnClass trans in StartMapS.EnemySpawnPoses) EnemySpawns.Add(trans);
 
         //スタートの生成が完了
 
@@ -188,6 +200,7 @@ public class MapGeneraterVer2 : MonoBehaviour
                 if (checkk)
                 {
                     MapBaseScriptVer2 GeneratedMap = Instantiate(SelectMaterial.gameObject, MapParent).GetComponent<MapBaseScriptVer2>();
+                    GeneratedMaps.Add(GeneratedMap); // 生成されたマップを追跡
                     Transform LoopHoleVec = transform;
                     foreach (MapLoopholeVer2 holee in GeneratedMap.Loopholes) holee.CenterToThisLoopHole = (GeneratedMap.transform.position - holee.transform.position);
                     foreach (MapLoopholeVer2 holee in GeneratedMap.Loopholes)
@@ -249,6 +262,7 @@ public class MapGeneraterVer2 : MonoBehaviour
             {
                 //生成する
                 MapBaseScriptVer2 GeneratedMap = Instantiate(SelectMaterial.gameObject, MapParent).GetComponent<MapBaseScriptVer2>();
+                GeneratedMaps.Add(GeneratedMap); // 生成されたマップを追跡
                 //チェックしたが、実際どの抜け道が合うか選ぶ
                 Transform LoopHoleVec = transform;
                 foreach (MapLoopholeVer2 hole in GeneratedMap.Loopholes) hole.CenterToThisLoopHole = (GeneratedMap.transform.position - hole.transform.position);
@@ -289,8 +303,8 @@ public class MapGeneraterVer2 : MonoBehaviour
                 int EnterNum = GeneratedMap.EnterNum;
                 MapNumber = RematchMapNumber(TrueNum, EnterNum, MapNumber, GeneratedMap);
 
-                //敵の生成位置の保存                
-                if (GeneratedMap.EnemySpawnPoses.Count != 0)
+                //敵の生成位置の保存 - マップタイプに基づいて判断
+                if (GeneratedMap.ShouldSpawnEnemies() && GeneratedMap.EnemySpawnPoses.Count != 0)
                 {
                     foreach (EnemySpawnClass trans in GeneratedMap.EnemySpawnPoses) EnemySpawns.Add(trans);
                 }
@@ -331,6 +345,7 @@ public class MapGeneraterVer2 : MonoBehaviour
         }
 
         MapBaseScriptVer2 GeneratedMap2=Instantiate(EndMaterial.gameObject,MapParent).GetComponent<MapBaseScriptVer2>();
+        GeneratedMaps.Add(GeneratedMap2); // 生成されたマップを追跡
         Transform LoopHoleVec2=transform;
         foreach(MapLoopholeVer2 holee in GeneratedMap2.Loopholes)holee.CenterToThisLoopHole=(GeneratedMap2.transform.position-holee.transform.position);
         foreach(MapLoopholeVer2 holee in GeneratedMap2.Loopholes){
@@ -465,6 +480,7 @@ public class MapGeneraterVer2 : MonoBehaviour
                     if (checkk)
                     {
                         MapBaseScriptVer2 GeneratedMap = Instantiate(SelectMaterial.gameObject, MapParent).GetComponent<MapBaseScriptVer2>();
+                        GeneratedMaps.Add(GeneratedMap); // 生成されたマップを追跡
                         Transform LoopHoleVec = transform;
                         foreach (MapLoopholeVer2 holee in GeneratedMap.Loopholes) holee.CenterToThisLoopHole = (GeneratedMap.transform.position - holee.transform.position);
                         foreach (MapLoopholeVer2 holee in GeneratedMap.Loopholes)
@@ -508,6 +524,7 @@ public class MapGeneraterVer2 : MonoBehaviour
                 {
                     //普通の生成
                     MapBaseScriptVer2 GeneratedMapFail = Instantiate(SelectMaterial.gameObject, MapParent).GetComponent<MapBaseScriptVer2>();
+                    GeneratedMaps.Add(GeneratedMapFail); // 生成されたマップを追跡
                     Transform LoopHoleVec = transform;
                     foreach (MapLoopholeVer2 hole in GeneratedMapFail.Loopholes) hole.CenterToThisLoopHole = (GeneratedMapFail.transform.position - hole.transform.position);
                     foreach (MapLoopholeVer2 hole in GeneratedMapFail.Loopholes)
@@ -536,7 +553,8 @@ public class MapGeneraterVer2 : MonoBehaviour
                     //正しい道にはいけているが、ハズレの道には正しくMapNumberが適応されていない。failExitVecで他の出口にも適応されるように設定する。
                     Vector3 failExitMapNumber = failMapNumber;
                     failMapNumber = RematchMapNumber(TrueNum, EnterNum, failMapNumber, GeneratedMapFail);
-                    if (GeneratedMapFail.EnemySpawnPoses.Count != 0)
+                    // マップタイプに基づいて敵生成位置を収集
+                    if (GeneratedMapFail.ShouldSpawnEnemies() && GeneratedMapFail.EnemySpawnPoses.Count != 0)
                     {
                         foreach (EnemySpawnClass trans in GeneratedMapFail.EnemySpawnPoses) EnemySpawns.Add(trans);
                     }
@@ -586,6 +604,7 @@ public class MapGeneraterVer2 : MonoBehaviour
                                 Vector3 tmpMapNumber= RematchMapNumber(failEndExitNum,failEndEnterNum,failExitMapNumber, GeneratedMapFail);
                                 // Debug.Log($"tmpMapNumber:{tmpMapNumber}");
                                 MapBaseScriptVer2 GeneratedMap = Instantiate(SelectMaterial.gameObject, MapParent).GetComponent<MapBaseScriptVer2>();
+                                GeneratedMaps.Add(GeneratedMap); // 生成されたマップを追跡
                                 Transform LoopHoleVect = transform;
                                 foreach (MapLoopholeVer2 holee in GeneratedMap.Loopholes) holee.CenterToThisLoopHole = (GeneratedMap.transform.position - holee.transform.position);
                                 foreach (MapLoopholeVer2 holee in GeneratedMap.Loopholes)
@@ -647,6 +666,7 @@ public class MapGeneraterVer2 : MonoBehaviour
                     if (checkk)
                     {
                         MapBaseScriptVer2 GeneratedMap = Instantiate(SelectMaterial.gameObject, MapParent).GetComponent<MapBaseScriptVer2>();
+                        GeneratedMaps.Add(GeneratedMap); // 生成されたマップを追跡
                         Transform LoopHoleVect = transform;
                         foreach (MapLoopholeVer2 holee in GeneratedMap.Loopholes) holee.CenterToThisLoopHole = (GeneratedMap.transform.position - holee.transform.position);
                         foreach (MapLoopholeVer2 holee in GeneratedMap.Loopholes)
@@ -704,6 +724,9 @@ public class MapGeneraterVer2 : MonoBehaviour
         }
         yield return null;
 
+        // マップ生成統計をログに出力
+        LogMapGenerationStats();
+
         //始めるぞ
         
         SceneManagerScript.instance.StartStage(this);
@@ -745,6 +768,66 @@ public class MapGeneraterVer2 : MonoBehaviour
             return 0;
         }
     }
+
+#if UNITY_EDITOR
+    /// <summary>
+    /// 生成されたマップの統計情報を取得する
+    /// </summary>
+    public MapGenerationStats GetMapGenerationStats()
+    {
+        MapGenerationStats stats = new MapGenerationStats();
+
+        if (GeneratedMaps == null) return stats;
+
+        foreach (MapBaseScriptVer2 map in GeneratedMaps)
+        {
+            stats.TotalMaps++;
+
+            switch (map.mapType)
+            {
+                case MapType.Normal:
+                    stats.NormalMaps++;
+                    break;
+                case MapType.Safe:
+                    stats.SafeMaps++;
+                    break;
+                case MapType.Challenge:
+                    stats.ChallengeMaps++;
+                    break;
+                case MapType.Treasure:
+                    stats.TreasureMaps++;
+                    break;
+            }
+
+            if (map.ShouldSpawnEnemies())
+            {
+                stats.MapsWithEnemies++;
+            }
+            else
+            {
+                stats.MapsWithoutEnemies++;
+            }
+        }
+
+        return stats;
+    }
+
+    /// <summary>
+    /// マップ生成統計をログに出力する
+    /// </summary>
+    public void LogMapGenerationStats()
+    {
+        MapGenerationStats stats = GetMapGenerationStats();
+        Debug.Log($"=== マップ生成統計 ===");
+        Debug.Log($"総マップ数: {stats.TotalMaps}");
+        Debug.Log($"通常マップ: {stats.NormalMaps}");
+        Debug.Log($"安全マップ: {stats.SafeMaps}");
+        Debug.Log($"チャレンジマップ: {stats.ChallengeMaps}");
+        Debug.Log($"宝箱マップ: {stats.TreasureMaps}");
+        Debug.Log($"敵生成あり: {stats.MapsWithEnemies}");
+        Debug.Log($"敵生成なし: {stats.MapsWithoutEnemies}");
+    }
+#endif
 }
 
 [System.Serializable]
@@ -794,3 +877,4 @@ public class SpecificMapInfo{
     }
 
 }
+

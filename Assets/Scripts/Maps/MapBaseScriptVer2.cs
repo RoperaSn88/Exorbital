@@ -15,6 +15,9 @@ public class MapBaseScriptVer2 : MonoBehaviour
     //public Transform StartPos;
     //public Transform EndPos;
 
+    [Header("マップタイプ設定")]
+    public MapType mapType = MapType.Normal;
+
     public List<MapLoopholeVer2> Loopholes;
     public List<EnemySpawnClass> EnemySpawnPoses;
     public List<Transform> TreasureSpawnPoses;
@@ -372,6 +375,22 @@ public class MapBaseScriptVer2 : MonoBehaviour
 
 
     //抜け道とマップの位置の計算?
+
+    /// <summary>
+    /// このマップが敵を生成するかどうかを返す
+    /// </summary>
+    public bool ShouldSpawnEnemies()
+    {
+        return mapType == MapType.Normal || mapType == MapType.Challenge;
+    }
+
+    /// <summary>
+    /// このマップが宝箱を生成するかどうかを返す
+    /// </summary>
+    public bool ShouldSpawnTreasures()
+    {
+        return mapType == MapType.Treasure || TreasureSpawnPoses.Count > 0;
+    }
 }
 [System.Serializable]
 public class NeighborClass {
