@@ -56,7 +56,10 @@ public class MapGeneraterVer2 : MonoBehaviour
     public IEnumerator GenerateMap()
     {
         // 生成されたマップのリストを初期化
-        GeneratedMaps = new List<MapBaseScriptVer2>();
+        if (GeneratedMaps == null)
+            GeneratedMaps = new List<MapBaseScriptVer2>();
+        else
+            GeneratedMaps.Clear();
 
         List<EnemySpawnClass> EnemySpawns=new List<EnemySpawnClass>();
         List<Transform> TreasureSpawns=new List<Transform>();
@@ -766,6 +769,8 @@ public class MapGeneraterVer2 : MonoBehaviour
         }
     }
 
+
+#if UNITY_EDITOR
     /// <summary>
     /// 生成されたマップの統計情報を取得する
     /// </summary>
@@ -823,6 +828,7 @@ public class MapGeneraterVer2 : MonoBehaviour
         Debug.Log($"敵生成あり: {stats.MapsWithEnemies}");
         Debug.Log($"敵生成なし: {stats.MapsWithoutEnemies}");
     }
+#endif
 }
 
 [System.Serializable]
@@ -873,17 +879,3 @@ public class SpecificMapInfo{
 
 }
 
-/// <summary>
-/// マップ生成統計情報を格納するクラス
-/// </summary>
-[System.Serializable]
-public class MapGenerationStats
-{
-    public int TotalMaps;
-    public int NormalMaps;
-    public int SafeMaps;
-    public int ChallengeMaps;
-    public int TreasureMaps;
-    public int MapsWithEnemies;
-    public int MapsWithoutEnemies;
-}
