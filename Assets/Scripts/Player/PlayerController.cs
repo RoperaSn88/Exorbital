@@ -81,8 +81,6 @@ public class PlayerController : MonoBehaviour
         Air = true;
         SkillSelectNumber = 0;
         AllAttackCollider = transform.Find("AttackColliders");
-        _elementTimerCancellationTokenSource?.Cancel();
-        _elementTimerCancellationTokenSource?.Dispose();
         _elementTimerCancellationTokenSource = new CancellationTokenSource();
         StartElementTimer(_elementTimerCancellationTokenSource.Token).Forget();
     }
@@ -189,7 +187,6 @@ public class PlayerController : MonoBehaviour
     {
         _elementTimerCancellationTokenSource?.Cancel();
         _elementTimerCancellationTokenSource?.Dispose();
-        _elementTimerCancellationTokenSource = null;
     }
 
     void OnKeyboard(InputAction.CallbackContext context)
