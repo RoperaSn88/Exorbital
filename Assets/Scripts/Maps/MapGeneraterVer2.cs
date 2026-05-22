@@ -769,7 +769,6 @@ public class MapGeneraterVer2 : MonoBehaviour
         }
     }
 
-
 #if UNITY_EDITOR
     /// <summary>
     /// 生成されたマップの統計情報を取得する

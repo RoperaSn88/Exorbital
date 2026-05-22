@@ -1,5 +1,3 @@
-using UnityEngine;
-
 /// <summary>
 /// マップ生成統計情報を格納するクラス
 /// </summary>
