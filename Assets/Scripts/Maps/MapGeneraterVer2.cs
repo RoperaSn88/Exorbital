@@ -88,14 +88,16 @@ public class MapGeneraterVer2 : MonoBehaviour
 
         
 
+        List<MapBaseScriptVer2> enemyMapMaterials = MapMaterials.FindAll(map => map.ShouldSpawnEnemies());
+        List<MapBaseScriptVer2> normalMapMaterials = MapMaterials.FindAll(map => !map.ShouldSpawnEnemies());
         int remainEnemyMapCount = MapCount;
         while (remainEnemyMapCount > 0)
         {
             
             MapBaseScriptVer2 SelectMaterial = null;
             
-            CopyMapMaterials = new List<MapBaseScriptVer2>(MapMaterials.FindAll(map => map.ShouldSpawnEnemies()));
-            List<MapBaseScriptVer2> CopyNormalMapMaterials = new List<MapBaseScriptVer2>(MapMaterials.FindAll(map => !map.ShouldSpawnEnemies()));
+            CopyMapMaterials = new List<MapBaseScriptVer2>(enemyMapMaterials);
+            List<MapBaseScriptVer2> CopyNormalMapMaterials = new List<MapBaseScriptVer2>(normalMapMaterials);
             CopyChallenges = new List<MapBaseScriptVer2>(ChallengeMaps);
             
             bool AllMapCantSet = false;
