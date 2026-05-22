@@ -90,8 +90,8 @@ public class MapGeneraterVer2 : MonoBehaviour
 
         List<MapBaseScriptVer2> enemyMapMaterials = MapMaterials.FindAll(map => map.ShouldSpawnEnemies());
         List<MapBaseScriptVer2> normalMapMaterials = MapMaterials.FindAll(map => !map.ShouldSpawnEnemies());
-        int remainEnemyMapCount = MapCount;
-        while (remainEnemyMapCount > 0)
+        int remainEnemyMapGenerationCount = MapCount;
+        while (remainEnemyMapGenerationCount > 0)
         {
             
             MapBaseScriptVer2 SelectMaterial = null;
@@ -186,7 +186,7 @@ public class MapGeneraterVer2 : MonoBehaviour
             {
                 if (TrySelectMapMaterial(CopyNormalMapMaterials, MapNumber, TrueNum, Fails, true, out MapBaseScriptVer2 replaceMap))
                 {
-                    Debug.Log($"Enemy map generation skipped. Use settable normal map {replaceMap.name}");
+                    Debug.Log($"All enemy maps unavailable. Use settable normal map {replaceMap.name}");
                     SelectMaterial = replaceMap;
                     AllMapCantSet = false;
                 }
@@ -317,10 +317,7 @@ public class MapGeneraterVer2 : MonoBehaviour
                 }
 
                 // Debug.Log($"TrueNum:{TrueNum}");
-                if (GeneratedMap.ShouldSpawnEnemies())
-                {
-                    remainEnemyMapCount--;
-                }
+                remainEnemyMapGenerationCount--;
                 SelectMaterial = null;
 
                 if (SpecificMapInfo.CheckSelectSpecific())
