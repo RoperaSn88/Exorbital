@@ -90,23 +90,18 @@ public class MapGeneraterVer2 : MonoBehaviour
 
         List<MapBaseScriptVer2> enemyMapMaterials = MapMaterials.FindAll(map => map.ShouldSpawnEnemies());
         List<MapBaseScriptVer2> normalMapMaterials = MapMaterials.FindAll(map => !map.ShouldSpawnEnemies());
-        List<MapBaseScriptVer2> copyNormalMapMaterials = new List<MapBaseScriptVer2>(normalMapMaterials.Count);
         if (CopyMapMaterials == null)
-            CopyMapMaterials = new List<MapBaseScriptVer2>(enemyMapMaterials.Count);
-        if (CopyChallenges == null)
-            CopyChallenges = new List<MapBaseScriptVer2>(ChallengeMaps.Count);
+            CopyMapMaterials = new List<MapBaseScriptVer2>();
         int remainEnemyMapGenerationCount = MapCount;
         while (remainEnemyMapGenerationCount > 0)
         {
             
             MapBaseScriptVer2 SelectMaterial = null;
+            List<MapBaseScriptVer2> copyNormalMapMaterials = new List<MapBaseScriptVer2>(normalMapMaterials);
             
             CopyMapMaterials.Clear();
             CopyMapMaterials.AddRange(enemyMapMaterials);
-            copyNormalMapMaterials.Clear();
-            copyNormalMapMaterials.AddRange(normalMapMaterials);
-            CopyChallenges.Clear();
-            CopyChallenges.AddRange(ChallengeMaps);
+            CopyChallenges = new List<MapBaseScriptVer2>(ChallengeMaps);
             
             bool AllMapCantSet = false;
 
