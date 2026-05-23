@@ -743,7 +743,7 @@ public class MapGeneraterVer2 : MonoBehaviour
         return compatibleMapCount;
     }
 
-    bool TryTakeBranchSeed(MapBaseScriptVer2 branchBaseMap, ref bool usePrimaryBranchSeed, Vector3 primarySaveVec, Vector3 primaryMapNumber, int primaryTrueNum, out BranchSeed branchSeed)
+    bool TryTakeBranchSeed(MapBaseScriptVer2 branchBaseMap, ref bool usePrimaryBranchSeed, Vector3 primarySaveVec, Vector3 primaryMapPosition, int primaryTrueNum, out BranchSeed branchSeed)
     {
         if (usePrimaryBranchSeed)
         {
@@ -751,7 +751,7 @@ public class MapGeneraterVer2 : MonoBehaviour
             branchSeed = new BranchSeed
             {
                 SaveVec = primarySaveVec,
-                MapNumber = primaryMapNumber,
+                MapPosition = primaryMapPosition,
                 TrueNum = primaryTrueNum
             };
             return true;
@@ -759,8 +759,8 @@ public class MapGeneraterVer2 : MonoBehaviour
 
         while (Fails.Count > 0)
         {
-            int failIndex = Fails.FindIndex(fail => fail.BaseMap == branchBaseMap);
-            if (failIndex < 0) failIndex = 0;
+            int preferredFailIndex = Fails.FindIndex(fail => fail.BaseMap == branchBaseMap);
+            int failIndex = preferredFailIndex >= 0 ? preferredFailIndex : 0;
 
             FailLoophoolClass fail = Fails[failIndex];
             Fails.RemoveAt(failIndex);
@@ -789,7 +789,7 @@ public class MapGeneraterVer2 : MonoBehaviour
                 branchSeed = new BranchSeed
                 {
                     SaveVec = fail.ExitPos,
-                    MapNumber = failMapNumber,
+                    MapPosition = failMapNumber,
                     TrueNum = fail.ExitNum
                 };
                 return true;
@@ -803,7 +803,7 @@ public class MapGeneraterVer2 : MonoBehaviour
     {
         int ran = UnityEngine.Random.Range(MiniMapCountMin, MiniMapCountMax);
         int branchTrueNum = branchSeed.TrueNum;
-        Vector3 branchMapNumber = branchSeed.MapNumber;
+        Vector3 branchMapNumber = branchSeed.MapPosition;
         Vector3 branchSaveVec = branchSeed.SaveVec;
 
         while (ran > 0)
@@ -1018,7 +1018,7 @@ public class FailLoophoolClass{
 public class BranchSeed
 {
     public int TrueNum;
-    public Vector3 MapNumber;
+    public Vector3 MapPosition;
     public Vector3 SaveVec;
 }
 
