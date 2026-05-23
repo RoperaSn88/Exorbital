@@ -3081,6 +3081,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abd147a47a40fd8478d2a38ddc4a7518, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mapType: 1
   MapInfo:
     Neighbor: 000000000000000000000000000000000000000001000000000000000100000000000000
     MapScale:
