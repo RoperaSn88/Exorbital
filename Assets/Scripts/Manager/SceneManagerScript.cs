@@ -92,6 +92,8 @@ public class SceneManagerScript : MonoBehaviour
     public Transform BossPos;
     float RealMapSize;
     bool MapSet = false;
+    const float HiddenMapCellAlpha = 0.2f;
+    Dictionary<Vector2Int, Image> _mapCells = new Dictionary<Vector2Int, Image>();
     public SkillNodeClass SkillNodeInfos;
     public Image _finishingPanel;
     public AudioClip _finishingSound;
@@ -153,6 +155,8 @@ public class SceneManagerScript : MonoBehaviour
     Vector3 SavedPlayerPos = new Vector3(0, 0, 0);
     public void UpdatePlayerMapPos(Transform PlayerTrans, bool isRight)
     {
+        if (!MapSet || PlayerTrans == null || PlayerIconPos == null || MapCellsPos == null || RealMapSize <= 0f) return;
+
         Vector3 UseVec = PlayerTrans.position - SavedPlayerPos;
         if (UseVec.x > 0 && PlayerIconPos.anchoredPosition.x > 40) MapCellsPos.anchoredPosition -= new Vector2(UseVec.x, 0) * MapSize / RealMapSize;
         else if (UseVec.x < 0 && PlayerIconPos.anchoredPosition.x < -40) MapCellsPos.anchoredPosition -= new Vector2(UseVec.x, 0) * MapSize / RealMapSize;
@@ -167,12 +171,14 @@ public class SceneManagerScript : MonoBehaviour
         PlayerIconPos.rotation = Quaternion.Euler(0, 0, -setRotationValue);
 
         SavedPlayerPos = PlayerTrans.position;
+        BrightenVisitedMapCell(PlayerTrans.position);
     }
     public void ResetMapPos()
     {
         SavedPlayerPos = Vector3.zero;
         MapCellsPos.anchoredPosition = Vector2.zero;
         PlayerIconPos.anchoredPosition = Vector2.zero;
+        if (PlayerController.instance != null) BrightenVisitedMapCell(PlayerController.instance.transform.position);
     }
     public void StartStage(MapGeneraterVer2 gen=null)
     {
@@ -195,7 +201,9 @@ public class SceneManagerScript : MonoBehaviour
         //背景設定　チュートリアルステージならばtrue
         if (gen == null) SetCameraBackGround(true);
         else SetCameraBackGround();
+        if (gen != null) SetupMapCells(gen);
         PlayerController.instance.ControlF = true;
+        SavedPlayerPos = PlayerController.instance.transform.position;
         //ForBattleData.instance.ReturnCalcurateData();
         if (!staticScript._hasData) SaveManager.Instance.SaveData();
 
@@ -207,6 +215,74 @@ public class SceneManagerScript : MonoBehaviour
             SaveManager.Instance.ReflexPlayerData();
             staticScript._hasData = false;
         }
+    }
+
+    void SetupMapCells(MapGeneraterVer2 gen)
+    {
+        if (MapCellsPos == null || MapPieceObject == null) return;
+
+        for (int i = MapCellsPos.childCount - 1; i >= 0; i--)
+        {
+            Destroy(MapCellsPos.GetChild(i).gameObject);
+        }
+        _mapCells.Clear();
+
+        if (gen == null || gen.MapNumbers == null || gen.MapNumbers.Count == 0)
+        {
+            MapSet = false;
+            return;
+        }
+
+        HashSet<Vector2Int> cellNumbers = new HashSet<Vector2Int>();
+        int minX = int.MaxValue;
+        int maxX = int.MinValue;
+        int minY = int.MaxValue;
+        int maxY = int.MinValue;
+        foreach (Vector3 number in gen.MapNumbers)
+        {
+            Vector2Int cell = new Vector2Int(Mathf.RoundToInt(number.x), Mathf.RoundToInt(number.z));
+            if (!cellNumbers.Add(cell)) continue;
+            minX = Mathf.Min(minX, cell.x);
+            maxX = Mathf.Max(maxX, cell.x);
+            minY = Mathf.Min(minY, cell.y);
+            maxY = Mathf.Max(maxY, cell.y);
+        }
+
+        RectTransform mapPieceRect = MapPieceObject.GetComponent<RectTransform>();
+        MapSize = mapPieceRect != null ? mapPieceRect.sizeDelta.x : 30f;
+        Vector2 center = new Vector2((minX + maxX) * 0.5f, (minY + maxY) * 0.5f);
+        foreach (Vector2Int cell in cellNumbers)
+        {
+            GameObject mapPiece = Instantiate(MapPieceObject, MapCellsPos);
+            RectTransform pieceRect = mapPiece.GetComponent<RectTransform>();
+            if (pieceRect != null)
+            {
+                pieceRect.anchoredPosition = new Vector2((cell.x - center.x) * MapSize, (cell.y - center.y) * MapSize);
+            }
+
+            Image image = mapPiece.GetComponent<Image>();
+            if (image != null)
+            {
+                Color color = image.color;
+                color.a = HiddenMapCellAlpha;
+                image.color = color;
+                _mapCells[cell] = image;
+            }
+        }
+
+        MapSet = _mapCells.Count > 0;
+        if (PlayerController.instance != null) BrightenVisitedMapCell(PlayerController.instance.transform.position);
+    }
+
+    void BrightenVisitedMapCell(Vector3 playerPosition)
+    {
+        if (!MapSet || RealMapSize <= 0f) return;
+        Vector2Int playerCell = new Vector2Int(Mathf.RoundToInt(playerPosition.x / RealMapSize), Mathf.RoundToInt(playerPosition.z / RealMapSize));
+        if (!_mapCells.TryGetValue(playerCell, out Image mapCell)) return;
+
+        Color color = mapCell.color;
+        color.a = 1f;
+        mapCell.color = color;
     }
 
     public void InvisibleUIs()
