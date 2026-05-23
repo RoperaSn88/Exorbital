@@ -9,9 +9,6 @@ EditorBuildSettings:
     path: Assets/Scenes/Title2.unity
     guid: 9f1e26f809186d841a73b4ffe5e45167
   - enabled: 1
-    path: Assets/Scenes/SettingScene.unity
-    guid: 0c7f67d8ed774862a3a931f056df4894
-  - enabled: 1
     path: Assets/Scenes/LouglikeScene.unity
     guid: 56a3e483968ed0c4fae3bfeea88d7a62
   - enabled: 1
@@ -62,6 +59,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/End.unity
     guid: ce6bfc00c6c346443926784c898481a2
+  - enabled: 1
+    path: Assets/Scenes/SettingScene.unity
+    guid: 0c7f67d8ed774862a3a931f056df4894
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 6c232c1b6dc436b4eab81a1a87d6e5f2, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 350855fd8dddf1548b1d3ddd450b69a7, type: 3}

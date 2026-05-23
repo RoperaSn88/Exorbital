@@ -105,7 +105,7 @@ public partial class @OperateActions: IInputActionCollection2, IDisposable
                     ""name"": ""CameraRotate"",
                     ""type"": ""Value"",
                     ""id"": ""b282ef06-3b57-4e4d-b62e-e0052ee0831e"",
-                    ""expectedControlType"": ""Double"",
+                    ""expectedControlType"": ""Axis"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
@@ -348,7 +348,7 @@ public partial class @OperateActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""0007dcd1-0475-4419-ae83-757d2f343c4c"",
-                    ""path"": ""<DualShockGamepad>/rightStick"",
+                    ""path"": ""<DualShockGamepad>/rightStick/x"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -359,7 +359,7 @@ public partial class @OperateActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""bf3b65cc-1291-4110-b130-fb6f770598de"",
-                    ""path"": ""<XInputController>/rightStick"",
+                    ""path"": ""<XInputController>/rightStick/x"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
