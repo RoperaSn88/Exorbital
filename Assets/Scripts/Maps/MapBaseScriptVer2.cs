@@ -8,15 +8,15 @@ using UnityEngine;
 
 public class MapBaseScriptVer2 : MonoBehaviour
 {
+    [Header("マップタイプ設定")]
+    public MapType mapType = MapType.Normal;
+    
     public NeighborClass MapInfo;
 
     //スタートとゴールを設定していたが、それだとマップ生成に制限がかかるため
     //抜けれる箇所をリスト化しておく
     //public Transform StartPos;
     //public Transform EndPos;
-
-    [Header("マップタイプ設定")]
-    public MapType mapType = MapType.Normal;
 
     public List<MapLoopholeVer2> Loopholes;
     public List<EnemySpawnClass> EnemySpawnPoses;

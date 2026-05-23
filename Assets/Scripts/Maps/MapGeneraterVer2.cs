@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.AI.Navigation;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class MapGeneraterVer2 : MonoBehaviour
@@ -88,12 +87,19 @@ public class MapGeneraterVer2 : MonoBehaviour
 
         
 
-        while (MapCount > 0)
+        List<MapBaseScriptVer2> enemyMapMaterials = MapMaterials.FindAll(map => map.ShouldSpawnEnemies());
+        List<MapBaseScriptVer2> normalMapMaterials = MapMaterials.FindAll(map => !map.ShouldSpawnEnemies());
+        if (CopyMapMaterials == null)
+            CopyMapMaterials = new List<MapBaseScriptVer2>();
+        int remainEnemyMapGenerationCount = MapCount;
+        while (remainEnemyMapGenerationCount > 0)
         {
             
             MapBaseScriptVer2 SelectMaterial = null;
+            List<MapBaseScriptVer2> copyNormalMapMaterials = new List<MapBaseScriptVer2>(normalMapMaterials);
             
-            CopyMapMaterials = new List<MapBaseScriptVer2>(MapMaterials);
+            CopyMapMaterials.Clear();
+            CopyMapMaterials.AddRange(enemyMapMaterials);
             CopyChallenges = new List<MapBaseScriptVer2>(ChallengeMaps);
             
             bool AllMapCantSet = false;
@@ -180,9 +186,9 @@ public class MapGeneraterVer2 : MonoBehaviour
             //すべてのマップが生成できなかったら出口を生成する
             if (AllMapCantSet)
             {
-                if (TrySelectMapMaterial(MapMaterials, MapNumber, TrueNum, Fails, true, out MapBaseScriptVer2 replaceMap))
+                if (TrySelectMapMaterial(copyNormalMapMaterials, MapNumber, TrueNum, Fails, true, out MapBaseScriptVer2 replaceMap))
                 {
-                    Debug.Log($"Mini End generation skipped. Use settable map {replaceMap.name}");
+                    Debug.Log($"All enemy maps unavailable. Use settable normal map {replaceMap.name}");
                     SelectMaterial = replaceMap;
                     AllMapCantSet = false;
                 }
@@ -313,7 +319,7 @@ public class MapGeneraterVer2 : MonoBehaviour
                 }
 
                 // Debug.Log($"TrueNum:{TrueNum}");
-                MapCount--;
+                remainEnemyMapGenerationCount--;
                 SelectMaterial = null;
 
                 if (SpecificMapInfo.CheckSelectSpecific())
