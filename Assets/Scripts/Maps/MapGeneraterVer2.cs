@@ -96,9 +96,17 @@ public class MapGeneraterVer2 : MonoBehaviour
             
             MapBaseScriptVer2 SelectMaterial = null;
             
-            CopyMapMaterials = new List<MapBaseScriptVer2>(enemyMapMaterials);
+            if (CopyMapMaterials == null)
+                CopyMapMaterials = new List<MapBaseScriptVer2>(enemyMapMaterials.Count);
+            else
+                CopyMapMaterials.Clear();
+            CopyMapMaterials.AddRange(enemyMapMaterials);
             List<MapBaseScriptVer2> CopyNormalMapMaterials = new List<MapBaseScriptVer2>(normalMapMaterials);
-            CopyChallenges = new List<MapBaseScriptVer2>(ChallengeMaps);
+            if (CopyChallenges == null)
+                CopyChallenges = new List<MapBaseScriptVer2>(ChallengeMaps.Count);
+            else
+                CopyChallenges.Clear();
+            CopyChallenges.AddRange(ChallengeMaps);
             
             bool AllMapCantSet = false;
 
