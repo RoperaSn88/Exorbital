@@ -90,6 +90,7 @@ public class MapGeneraterVer2 : MonoBehaviour
 
         List<MapBaseScriptVer2> enemyMapMaterials = MapMaterials.FindAll(map => map.ShouldSpawnEnemies());
         List<MapBaseScriptVer2> normalMapMaterials = MapMaterials.FindAll(map => !map.ShouldSpawnEnemies());
+        List<MapBaseScriptVer2> copyNormalMapMaterials = new List<MapBaseScriptVer2>(normalMapMaterials.Count);
         int remainEnemyMapGenerationCount = MapCount;
         while (remainEnemyMapGenerationCount > 0)
         {
@@ -101,7 +102,8 @@ public class MapGeneraterVer2 : MonoBehaviour
             else
                 CopyMapMaterials.Clear();
             CopyMapMaterials.AddRange(enemyMapMaterials);
-            List<MapBaseScriptVer2> CopyNormalMapMaterials = new List<MapBaseScriptVer2>(normalMapMaterials);
+            copyNormalMapMaterials.Clear();
+            copyNormalMapMaterials.AddRange(normalMapMaterials);
             if (CopyChallenges == null)
                 CopyChallenges = new List<MapBaseScriptVer2>(ChallengeMaps.Count);
             else
@@ -192,7 +194,7 @@ public class MapGeneraterVer2 : MonoBehaviour
             //すべてのマップが生成できなかったら出口を生成する
             if (AllMapCantSet)
             {
-                if (TrySelectMapMaterial(CopyNormalMapMaterials, MapNumber, TrueNum, Fails, true, out MapBaseScriptVer2 replaceMap))
+                if (TrySelectMapMaterial(copyNormalMapMaterials, MapNumber, TrueNum, Fails, true, out MapBaseScriptVer2 replaceMap))
                 {
                     Debug.Log($"All enemy maps unavailable. Use settable normal map {replaceMap.name}");
                     SelectMaterial = replaceMap;
