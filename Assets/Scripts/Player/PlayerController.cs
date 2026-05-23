@@ -5,6 +5,7 @@ using DG.Tweening;
 using System;
 using UnityEngine.VFX;
 using System.Threading.Tasks;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine.InputSystem;
 using Manager.SelectElement;
@@ -67,6 +68,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject Hissatu1;
     //PayerControllerの_gameActionsインスタンス1つだけで操作の入力は制御させる
     private OperateActions _gameActions;
+    private CancellationTokenSource _elementTimerCancellationTokenSource;
 
     private async void Start()
     {
@@ -79,7 +81,8 @@ public class PlayerController : MonoBehaviour
         Air = true;
         SkillSelectNumber = 0;
         AllAttackCollider = transform.Find("AttackColliders");
-        StartElementTimer();
+        _elementTimerCancellationTokenSource = new CancellationTokenSource();
+        StartElementTimer(_elementTimerCancellationTokenSource.Token).Forget();
     }
 
     async UniTask ActionActivate()
@@ -118,59 +121,72 @@ public class PlayerController : MonoBehaviour
     bool rollCheck = false;
     Vector2 moveVec;
 
-    async UniTask StartElementTimer()
+    async UniTask StartElementTimer(CancellationToken cancellationToken)
     {
-        while (true)
+        try
         {
-            switch (ForBattleData.instance.Element)
+            while (true)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                switch (ForBattleData.instance.Element)
+                {
+                    case ElementKinds.Normal:
+                        await UniTask.Delay(TimeSpan.FromSeconds(1f), cancellationToken: cancellationToken);
+                        break;
+                    case ElementKinds.Fire:
+                        if(ForBattleData.instance.OrbPieces.red > 0)
+                        {
+                            ForBattleData.instance.OrbPieces.red--;
+                            SceneManagerScript.instance.SetOrbPieceAmount(1, ForBattleData.instance.OrbPieces.red);
+                            await UniTask.Delay(TimeSpan.FromSeconds(3f), cancellationToken: cancellationToken);
+                        }
+                        else
+                        {
+                            ForBattleData.instance.Element = ElementKinds.Normal;
+                            SceneManagerScript.instance.SetElementImage(ForBattleData.instance.Element);
+                            await UniTask.Delay(TimeSpan.FromSeconds(1f), cancellationToken: cancellationToken);
+                        }
+                        break;
+                    case ElementKinds.Water:
+                        if(ForBattleData.instance.OrbPieces.blue > 0)
+                        {
+                            ForBattleData.instance.OrbPieces.blue--;
+                            SceneManagerScript.instance.SetOrbPieceAmount(2, ForBattleData.instance.OrbPieces.blue);
+                            await UniTask.Delay(TimeSpan.FromSeconds(3f), cancellationToken: cancellationToken);
+                        }
+                        else
+                        {
+                            ForBattleData.instance.Element = ElementKinds.Normal;
+                            SceneManagerScript.instance.SetElementImage(ForBattleData.instance.Element);
+                            await UniTask.Delay(TimeSpan.FromSeconds(1f), cancellationToken: cancellationToken);
+                        }
+                        break;
+                    case ElementKinds.Leaf:
+                        if(ForBattleData.instance.OrbPieces.green > 0)
+                        {
+                            ForBattleData.instance.OrbPieces.green--;
+                            SceneManagerScript.instance.SetOrbPieceAmount(0, ForBattleData.instance.OrbPieces.green);
+                            await UniTask.Delay(TimeSpan.FromSeconds(3f), cancellationToken: cancellationToken);
+                        }
+                        else
+                        {
+                            ForBattleData.instance.Element = ElementKinds.Normal;
+                            SceneManagerScript.instance.SetElementImage(ForBattleData.instance.Element);
+                            await UniTask.Delay(TimeSpan.FromSeconds(1f), cancellationToken: cancellationToken);
+                        }
+                        break;
+                }
+            }
+        }
+        catch (OperationCanceledException)
         {
-            case ElementKinds.Normal:
-                await UniTask.Delay(TimeSpan.FromSeconds(1f));
-                break;
-            case ElementKinds.Fire:
-                if(ForBattleData.instance.OrbPieces.red > 0)
-                {
-                    ForBattleData.instance.OrbPieces.red--;
-                    SceneManagerScript.instance.SetOrbPieceAmount(1, ForBattleData.instance.OrbPieces.red);
-                    await UniTask.Delay(TimeSpan.FromSeconds(3f));
-                }
-                else
-                {
-                    ForBattleData.instance.Element = ElementKinds.Normal;
-                    SceneManagerScript.instance.SetElementImage(ForBattleData.instance.Element);
-                    await UniTask.Delay(TimeSpan.FromSeconds(1f));
-                }
-                break;
-            case ElementKinds.Water:
-                if(ForBattleData.instance.OrbPieces.blue > 0)
-                {
-                    ForBattleData.instance.OrbPieces.blue--;
-                    SceneManagerScript.instance.SetOrbPieceAmount(2, ForBattleData.instance.OrbPieces.blue);
-                    await UniTask.Delay(TimeSpan.FromSeconds(3f));
-                }
-                else
-                {
-                    ForBattleData.instance.Element = ElementKinds.Normal;
-                    SceneManagerScript.instance.SetElementImage(ForBattleData.instance.Element);
-                    await UniTask.Delay(TimeSpan.FromSeconds(1f));
-                }
-                break;
-            case ElementKinds.Leaf:
-                if(ForBattleData.instance.OrbPieces.green > 0)
-                {
-                    ForBattleData.instance.OrbPieces.green--;
-                    SceneManagerScript.instance.SetOrbPieceAmount(0, ForBattleData.instance.OrbPieces.green);
-                    await UniTask.Delay(TimeSpan.FromSeconds(3f));
-                }
-                else
-                {
-                    ForBattleData.instance.Element = ElementKinds.Normal;
-                    SceneManagerScript.instance.SetElementImage(ForBattleData.instance.Element);
-                    await UniTask.Delay(TimeSpan.FromSeconds(1f));
-                }
-                break;
         }
-        }
+    }
+
+    private void OnDestroy()
+    {
+        _elementTimerCancellationTokenSource?.Cancel();
+        _elementTimerCancellationTokenSource?.Dispose();
     }
 
     void OnKeyboard(InputAction.CallbackContext context)
