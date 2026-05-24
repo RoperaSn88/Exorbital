@@ -5,6 +5,7 @@ using JetBrains.Annotations;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class MapBaseScriptVer2 : MonoBehaviour
 {
@@ -31,8 +32,26 @@ public class MapBaseScriptVer2 : MonoBehaviour
     public Vector3 MapVec;
     public Vector3 MapNumber;
     public List<int> Intss;
+    Tilemap[] _miniMapTilemaps;
     
-    
+
+    public void SetMiniMapAlpha(float alpha)
+    {
+        if (_miniMapTilemaps == null)
+        {
+            Transform miniMapRoot = transform.Find("miniMap");
+            if (miniMapRoot == null) return;
+            _miniMapTilemaps = miniMapRoot.GetComponentsInChildren<Tilemap>(true);
+        }
+
+        foreach (Tilemap tilemap in _miniMapTilemaps)
+        {
+            Color color = tilemap.color;
+            color.a = alpha;
+            tilemap.color = color;
+        }
+    }
+
     public void SaveMapNumbers(List<Vector3> Lists,Vector3 BaseVec,int TrueNum){
         EnterNum=TrueNum;
         MapVec=BaseVec;
