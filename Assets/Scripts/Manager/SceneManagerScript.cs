@@ -236,7 +236,7 @@ public class SceneManagerScript : MonoBehaviour
 
     public void RevealVisitedMiniMap(MapBaseScriptVer2 map)
     {
-        if (!MapSet || map == null) return;
+        if (map == null) return;
         if (_revealedMiniMaps.Contains(map)) return;
         map.SetMiniMapAlpha(1f);
         _revealedMiniMaps.Add(map);
