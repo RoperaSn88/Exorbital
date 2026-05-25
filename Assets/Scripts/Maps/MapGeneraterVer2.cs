@@ -761,7 +761,7 @@ public class MapGeneraterVer2 : MonoBehaviour
     int ResolveNextSceneIndex(MapBaseScriptVer2 endMap)
     {
         if (NextScenes == null || NextScenes.Count == 0) return -1;
-        if (endMap == null) return 0;
+        if (endMap == null) return -1;
         return Mathf.Clamp(endMap.NextSceneIndex, 0, NextScenes.Count - 1);
     }
 
@@ -773,6 +773,12 @@ public class MapGeneraterVer2 : MonoBehaviour
 
     bool TrySelectEndMapMaterial(List<MapBaseScriptVer2> materials, Vector3 mapNumber, int connectionDirection, List<FailLoophoolClass> failedLoopholes, int targetSceneIndex, out MapBaseScriptVer2 selectedMap)
     {
+        if (targetSceneIndex < 0 && NextScenes != null && NextScenes.Count > 0)
+        {
+            selectedMap = null;
+            return false;
+        }
+
         List<MapBaseScriptVer2> sceneSpecificMaterials = new List<MapBaseScriptVer2>();
         foreach (MapBaseScriptVer2 map in materials)
         {
@@ -924,7 +930,11 @@ public class MapGeneraterVer2 : MonoBehaviour
 
     void AssignNextSceneToEndArea(MapBaseScriptVer2 generatedEnd, SceneObject nextScene)
     {
-        if (generatedEnd == null || nextScene == null || string.IsNullOrEmpty(nextScene.m_SceneName)) return;
+        if (generatedEnd == null || nextScene == null || string.IsNullOrEmpty(nextScene.m_SceneName))
+        {
+            Debug.LogWarning("Next scene is not assigned for generated end map.");
+            return;
+        }
 
         foreach (Transform child in generatedEnd.GetComponentsInChildren<Transform>(true))
         {
