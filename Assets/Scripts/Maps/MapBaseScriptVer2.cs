@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -32,16 +33,16 @@ public class MapBaseScriptVer2 : MonoBehaviour
     public Vector3 MapVec;
     public Vector3 MapNumber;
     public List<int> Intss;
-    Tilemap[] _miniMapTilemaps;
+
+    [SerializeField]
+    private Tilemap[] _miniMapTilemaps;
     
 
     public void SetMiniMapAlpha(float alpha)
     {
         if (_miniMapTilemaps == null)
         {
-            Transform miniMapRoot = transform.Find("miniMap");
-            if (miniMapRoot == null) return;
-            _miniMapTilemaps = miniMapRoot.GetComponentsInChildren<Tilemap>(true);
+            throw new NullReferenceException("MiniMap Tilemaps not assigned. GameObject: " + gameObject.name);
         }
 
         foreach (Tilemap tilemap in _miniMapTilemaps)
