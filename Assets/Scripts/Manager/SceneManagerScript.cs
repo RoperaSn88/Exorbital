@@ -92,6 +92,8 @@ public class SceneManagerScript : MonoBehaviour
     public Transform BossPos;
     float RealMapSize;
     bool MapSet = false;
+    const float UnvisitedMiniMapAlpha = 0.5f;
+    HashSet<MapBaseScriptVer2> _revealedMiniMaps = new HashSet<MapBaseScriptVer2>();
     public SkillNodeClass SkillNodeInfos;
     public Image _finishingPanel;
     public AudioClip _finishingSound;
@@ -153,6 +155,8 @@ public class SceneManagerScript : MonoBehaviour
     Vector3 SavedPlayerPos = new Vector3(0, 0, 0);
     public void UpdatePlayerMapPos(Transform PlayerTrans, bool isRight)
     {
+        if (!MapSet || PlayerTrans == null || PlayerIconPos == null || MapCellsPos == null || RealMapSize <= 0f) return;
+
         Vector3 UseVec = PlayerTrans.position - SavedPlayerPos;
         if (UseVec.x > 0 && PlayerIconPos.anchoredPosition.x > 40) MapCellsPos.anchoredPosition -= new Vector2(UseVec.x, 0) * MapSize / RealMapSize;
         else if (UseVec.x < 0 && PlayerIconPos.anchoredPosition.x < -40) MapCellsPos.anchoredPosition -= new Vector2(UseVec.x, 0) * MapSize / RealMapSize;
@@ -195,7 +199,9 @@ public class SceneManagerScript : MonoBehaviour
         //背景設定　チュートリアルステージならばtrue
         if (gen == null) SetCameraBackGround(true);
         else SetCameraBackGround();
+        if (gen != null) SetupMiniMapTileMaps(gen);
         PlayerController.instance.ControlF = true;
+        SavedPlayerPos = PlayerController.instance.transform.position;
         //ForBattleData.instance.ReturnCalcurateData();
         if (!staticScript._hasData) SaveManager.Instance.SaveData();
 
@@ -207,6 +213,33 @@ public class SceneManagerScript : MonoBehaviour
             SaveManager.Instance.ReflexPlayerData();
             staticScript._hasData = false;
         }
+    }
+
+    void SetupMiniMapTileMaps(MapGeneraterVer2 gen)
+    {
+        _revealedMiniMaps.Clear();
+        if (gen == null || gen.MapParent == null)
+        {
+            MapSet = false;
+            return;
+        }
+
+        MapBaseScriptVer2[] maps = gen.MapParent.GetComponentsInChildren<MapBaseScriptVer2>(true);
+        foreach (MapBaseScriptVer2 map in maps)
+        {
+            if (map == null) continue;
+            map.SetMiniMapAlpha(UnvisitedMiniMapAlpha);
+        }
+
+        MapSet = maps.Length > 0;
+    }
+
+    public void RevealVisitedMiniMap(MapBaseScriptVer2 map)
+    {
+        if (map == null) return;
+        if (_revealedMiniMaps.Contains(map)) return;
+        map.SetMiniMapAlpha(1f);
+        _revealedMiniMaps.Add(map);
     }
 
     public void InvisibleUIs()
