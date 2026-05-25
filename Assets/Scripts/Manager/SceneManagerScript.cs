@@ -326,7 +326,7 @@ public class SceneManagerScript : MonoBehaviour
         FadePanel.DOFade(1f, 0.5f);
         yield return null;
         //次のステージを取得しておく
-        SceneLoader.Instance.targetScene = HasSelectedNextStageScene ? SelectedNextStageScene : generater?generater.NextScene:TutorialManager.Instance.NextScene;
+        SceneLoader.Instance.targetScene = ResolveNextStageScene();
         ClearSelectedNextStageScene();
         SceneLoader.Instance.SetnextSceneID(SceneLoader.Instance.targetScene);
         CVC.enabled = false;
@@ -359,6 +359,13 @@ public class SceneManagerScript : MonoBehaviour
     {
         SelectedNextStageScene = null;
         HasSelectedNextStageScene = false;
+    }
+
+    SceneObject ResolveNextStageScene()
+    {
+        if (HasSelectedNextStageScene) return SelectedNextStageScene;
+        if (generater) return generater.NextScene;
+        return TutorialManager.Instance.NextScene;
     }
     public void SetLevelText(int l)
     {

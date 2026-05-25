@@ -760,9 +760,10 @@ public class MapGeneraterVer2 : MonoBehaviour
 
     int ResolveNextSceneIndex(MapBaseScriptVer2 endMap)
     {
-        if (NextScenes == null || NextScenes.Count == 0) return -1;
+        int nextSceneCount = NextScenes == null ? 0 : NextScenes.Count;
+        if (nextSceneCount == 0) return -1;
         if (endMap == null) return -1;
-        return Mathf.Clamp(endMap.NextSceneIndex, 0, NextScenes.Count - 1);
+        return Mathf.Clamp(endMap.NextSceneIndex, 0, nextSceneCount - 1);
     }
 
     SceneObject ResolveNextScene(MapBaseScriptVer2 endMap)
@@ -930,9 +931,19 @@ public class MapGeneraterVer2 : MonoBehaviour
 
     void AssignNextSceneToEndArea(MapBaseScriptVer2 generatedEnd, SceneObject nextScene)
     {
-        if (generatedEnd == null || nextScene == null || string.IsNullOrEmpty(nextScene.m_SceneName))
+        if (generatedEnd == null)
         {
-            Debug.LogWarning("Next scene is not assigned for generated end map.");
+            Debug.LogWarning("Generated end map is missing while assigning the next scene.");
+            return;
+        }
+        if (nextScene == null)
+        {
+            Debug.LogWarning($"Next scene reference is missing for end map {generatedEnd.name}.");
+            return;
+        }
+        if (string.IsNullOrEmpty(nextScene.m_SceneName))
+        {
+            Debug.LogWarning($"Next scene name is empty for end map {generatedEnd.name}.");
             return;
         }
 
