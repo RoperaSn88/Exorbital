@@ -8,7 +8,7 @@ public class MapGeneraterVer2 : MonoBehaviour
 {
     public SceneObject thisScene;
     public SceneObject NextScene;
-    public List<SceneObject> NextScenes;
+    public SceneObject[] NextScenes;
     public Color color;
     public GameObject treasurePrefab;
     public MapBaseScriptVer2 StartMap;
@@ -760,7 +760,7 @@ public class MapGeneraterVer2 : MonoBehaviour
 
     int ResolveNextSceneIndex(MapBaseScriptVer2 endMap)
     {
-        int nextSceneCount = NextScenes == null ? 0 : NextScenes.Count;
+        int nextSceneCount = NextScenes == null ? 0 : NextScenes.Length;
         if (nextSceneCount == 0) return -1;
         if (endMap == null) return -1;
         return Mathf.Clamp(endMap.NextSceneIndex, 0, nextSceneCount - 1);
@@ -768,13 +768,13 @@ public class MapGeneraterVer2 : MonoBehaviour
 
     SceneObject ResolveNextScene(MapBaseScriptVer2 endMap)
     {
-        if (NextScenes == null || NextScenes.Count == 0) return NextScene;
+        if (NextScenes == null || NextScenes.Length == 0) return NextScene;
         return NextScenes[ResolveNextSceneIndex(endMap)];
     }
 
     bool TrySelectEndMapMaterial(List<MapBaseScriptVer2> materials, Vector3 mapNumber, int connectionDirection, List<FailLoophoolClass> failedLoopholes, int targetSceneIndex, out MapBaseScriptVer2 selectedMap)
     {
-        if (targetSceneIndex < 0 && NextScenes != null && NextScenes.Count > 0)
+        if (targetSceneIndex < 0 && NextScenes != null && NextScenes.Length > 0)
         {
             selectedMap = null;
             return false;
