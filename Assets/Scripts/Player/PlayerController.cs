@@ -586,11 +586,6 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        if (SceneManagerScript.instance != null)
-        {
-            SceneManagerScript.instance.UpdatePlayerMapPos(transform, isRight);
-        }
-
         if (transform.position.y < -20)
         {
             transform.position = SceneManagerScript.instance.ReSpawnVec;

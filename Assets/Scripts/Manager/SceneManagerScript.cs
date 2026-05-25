@@ -93,7 +93,6 @@ public class SceneManagerScript : MonoBehaviour
     float RealMapSize;
     bool MapSet = false;
     const float UnvisitedMiniMapAlpha = 0.5f;
-    Dictionary<Vector2Int, MapBaseScriptVer2> _mapsByNumber = new Dictionary<Vector2Int, MapBaseScriptVer2>();
     HashSet<MapBaseScriptVer2> _revealedMiniMaps = new HashSet<MapBaseScriptVer2>();
     public SkillNodeClass SkillNodeInfos;
     public Image _finishingPanel;
@@ -172,14 +171,12 @@ public class SceneManagerScript : MonoBehaviour
         PlayerIconPos.rotation = Quaternion.Euler(0, 0, -setRotationValue);
 
         SavedPlayerPos = PlayerTrans.position;
-        RevealVisitedMiniMap(PlayerTrans.position);
     }
     public void ResetMapPos()
     {
         SavedPlayerPos = Vector3.zero;
         MapCellsPos.anchoredPosition = Vector2.zero;
         PlayerIconPos.anchoredPosition = Vector2.zero;
-        if (PlayerController.instance != null) RevealVisitedMiniMap(PlayerController.instance.transform.position);
     }
     public void StartStage(MapGeneraterVer2 gen=null)
     {
@@ -220,7 +217,6 @@ public class SceneManagerScript : MonoBehaviour
 
     void SetupMiniMapTileMaps(MapGeneraterVer2 gen)
     {
-        _mapsByNumber.Clear();
         _revealedMiniMaps.Clear();
         if (gen == null || gen.MapParent == null)
         {
@@ -233,22 +229,14 @@ public class SceneManagerScript : MonoBehaviour
         {
             if (map == null) continue;
             map.SetMiniMapAlpha(UnvisitedMiniMapAlpha);
-            Vector2Int mapKey = new Vector2Int(Mathf.RoundToInt(map.MapNumber.x), Mathf.RoundToInt(map.MapNumber.z));
-            if (!_mapsByNumber.ContainsKey(mapKey))
-            {
-                _mapsByNumber.Add(mapKey, map);
-            }
         }
 
-        MapSet = _mapsByNumber.Count > 0;
-        if (PlayerController.instance != null) RevealVisitedMiniMap(PlayerController.instance.transform.position);
+        MapSet = maps.Length > 0;
     }
 
-    void RevealVisitedMiniMap(Vector3 playerPosition)
+    public void RevealVisitedMiniMap(MapBaseScriptVer2 map)
     {
-        if (!MapSet || RealMapSize <= 0f) return;
-        Vector2Int playerCell = new Vector2Int(Mathf.RoundToInt(playerPosition.x / RealMapSize), Mathf.RoundToInt(playerPosition.z / RealMapSize));
-        if (!_mapsByNumber.TryGetValue(playerCell, out MapBaseScriptVer2 map) || map == null) return;
+        if (!MapSet || map == null) return;
         if (_revealedMiniMaps.Contains(map)) return;
         map.SetMiniMapAlpha(1f);
         _revealedMiniMaps.Add(map);
