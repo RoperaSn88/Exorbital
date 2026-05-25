@@ -21,6 +21,7 @@ public class MapBaseScriptVer2 : MonoBehaviour
     public List<MapLoopholeVer2> Loopholes;
     public List<EnemySpawnClass> EnemySpawnPoses;
     public List<Transform> TreasureSpawnPoses;
+    public int NextSceneIndex;
     //かわりにスタートマップのスポーン地点としてStartPosを採用
     public Transform StartSpawnPos;
     public Transform EndSpawnPos;

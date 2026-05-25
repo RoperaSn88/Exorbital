@@ -86,6 +86,8 @@ public class SceneManagerScript : MonoBehaviour
 
     //Generator用
     MapGeneraterVer2 generater;
+    SceneObject SelectedNextStageScene;
+    bool HasSelectedNextStageScene;
     [SerializeField] AudioClip BGMclip;
     public List<LevelingClass> RogueLikeLevelUps;
     public Transform BossPos;
@@ -174,6 +176,7 @@ public class SceneManagerScript : MonoBehaviour
     }
     public void StartStage(MapGeneraterVer2 gen=null)
     {
+        ClearSelectedNextStageScene();
         TutorialManager Tutorial = null;
         if (gen == null)
         {
@@ -323,7 +326,8 @@ public class SceneManagerScript : MonoBehaviour
         FadePanel.DOFade(1f, 0.5f);
         yield return null;
         //次のステージを取得しておく
-        SceneLoader.Instance.targetScene = generater?generater.NextScene:TutorialManager.Instance.NextScene;
+        SceneLoader.Instance.targetScene = HasSelectedNextStageScene ? SelectedNextStageScene : generater?generater.NextScene:TutorialManager.Instance.NextScene;
+        ClearSelectedNextStageScene();
         SceneLoader.Instance.SetnextSceneID(SceneLoader.Instance.targetScene);
         CVC.enabled = false;
         yield return new WaitForSeconds(1.5f);
@@ -342,6 +346,19 @@ public class SceneManagerScript : MonoBehaviour
         FadePanel.DOFade(0f, 0.75f);
         PlayerController.instance.ControlF = true;
         SaveManager.Instance.SaveData();
+    }
+
+    public void SetSelectedNextStageScene(SceneObject nextScene)
+    {
+        if (nextScene == null || string.IsNullOrEmpty(nextScene.m_SceneName)) return;
+        SelectedNextStageScene = nextScene;
+        HasSelectedNextStageScene = true;
+    }
+
+    public void ClearSelectedNextStageScene()
+    {
+        SelectedNextStageScene = null;
+        HasSelectedNextStageScene = false;
     }
     public void SetLevelText(int l)
     {
