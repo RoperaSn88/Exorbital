@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -5,6 +6,7 @@ using JetBrains.Annotations;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class MapBaseScriptVer2 : MonoBehaviour
 {
@@ -32,8 +34,26 @@ public class MapBaseScriptVer2 : MonoBehaviour
     public Vector3 MapVec;
     public Vector3 MapNumber;
     public List<int> Intss;
+
+    [SerializeField]
+    private Tilemap[] _miniMapTilemaps;
     
-    
+
+    public void SetMiniMapAlpha(float alpha)
+    {
+        if (_miniMapTilemaps == null)
+        {
+            throw new NullReferenceException("MiniMap Tilemaps not assigned. GameObject: " + gameObject.name);
+        }
+
+        foreach (Tilemap tilemap in _miniMapTilemaps)
+        {
+            Color color = tilemap.color;
+            color.a = alpha;
+            tilemap.color = color;
+        }
+    }
+
     public void SaveMapNumbers(List<Vector3> Lists,Vector3 BaseVec,int TrueNum){
         EnterNum=TrueNum;
         MapVec=BaseVec;

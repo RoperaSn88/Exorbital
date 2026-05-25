@@ -204,7 +204,7 @@ public class PlayerController : MonoBehaviour
     }
     void OnRotate(InputAction.CallbackContext context)
     {
-        _rotateValue = context.ReadValue<Vector2>().x * 0.6f;
+        _rotateValue = context.ReadValue<float>() * 0.6f;
         _rotateF = _rotateValue != 0;
     }
 
@@ -585,7 +585,6 @@ public class PlayerController : MonoBehaviour
                 BuffT = 0;
             }
         }
-
 
         if (transform.position.y < -20)
         {

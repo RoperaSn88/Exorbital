@@ -621,7 +621,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Null
+  m_text: Coming soon...
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7b8d3acaa23423d4b9cf75f4a28483e8, type: 2}
   m_sharedMaterial: {fileID: -7044644073060074977, guid: 7b8d3acaa23423d4b9cf75f4a28483e8, type: 2}
@@ -648,8 +648,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18
-  m_fontSizeBase: 18
+  m_fontSize: 12
+  m_fontSizeBase: 12
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -4531,7 +4531,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Coming...
+  m_text: Coming soon...
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7b8d3acaa23423d4b9cf75f4a28483e8, type: 2}
   m_sharedMaterial: {fileID: -7044644073060074977, guid: 7b8d3acaa23423d4b9cf75f4a28483e8, type: 2}
@@ -5281,7 +5281,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Coming...
+  m_text: Coming soon...
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7b8d3acaa23423d4b9cf75f4a28483e8, type: 2}
   m_sharedMaterial: {fileID: -7044644073060074977, guid: 7b8d3acaa23423d4b9cf75f4a28483e8, type: 2}
@@ -5308,8 +5308,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18
-  m_fontSizeBase: 18
+  m_fontSize: 12
+  m_fontSizeBase: 12
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -12154,85 +12154,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &1140457413
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1140457414}
-  - component: {fileID: 1140457416}
-  - component: {fileID: 1140457415}
-  m_Layer: 5
-  m_Name: Label
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1140457414
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1140457413}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1770539211}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 9, y: -0.5}
-  m_SizeDelta: {x: -28, y: -3}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1140457415
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1140457413}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 14
-    m_FontStyle: 0
-    m_BestFit: 0
-    m_MinSize: 10
-    m_MaxSize: 40
-    m_Alignment: 0
-    m_AlignByGeometry: 0
-    m_RichText: 1
-    m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
-    m_LineSpacing: 1
-  m_Text: Toggle
---- !u!222 &1140457416
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1140457413}
-  m_CullTransparentMesh: 1
 --- !u!1 &1154798824
 GameObject:
   m_ObjectHideFlags: 0
@@ -12685,7 +12606,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Null
+  m_text: Coming soon...
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7b8d3acaa23423d4b9cf75f4a28483e8, type: 2}
   m_sharedMaterial: {fileID: -7044644073060074977, guid: 7b8d3acaa23423d4b9cf75f4a28483e8, type: 2}
@@ -12712,8 +12633,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18
-  m_fontSizeBase: 18
+  m_fontSize: 12
+  m_fontSizeBase: 12
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -22139,7 +22060,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 958711421}
-  - {fileID: 1140457414}
   m_Father: {fileID: 1457344747}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -22664,34 +22584,6 @@ MonoBehaviour:
   BGMclip: {fileID: 8300000, guid: f1071fb81871d68438b05b4eca6e9177, type: 3}
   RogueLikeLevelUps: []
   BossPos: {fileID: 0}
-  SkillNodeInfos:
-    root: {fileID: 1435876340}
-    OrbSprites:
-    - {fileID: 21300000, guid: aa721322e46d4804fb3253fb610522a5, type: 3}
-    - {fileID: 21300000, guid: f72c7bb6dca65ad41ac80f3b6e047802, type: 3}
-    - {fileID: 21300000, guid: 9b110ba7eecbb7c4fba7fde461ccb7df, type: 3}
-    skillNodePanelRect: {fileID: 2041179713}
-    selectOrbImage:
-    - {fileID: 36536946}
-    - {fileID: 621136329}
-    selectOrbText: {fileID: 1015153245}
-    nextNodeExplainText: {fileID: 1711715331}
-    nowLevelText: {fileID: 1609670383}
-    nextLevelText: {fileID: 908116689}
-    NeedOrbsRect: {fileID: 1154798825}
-    NeedOrbsText:
-    - {fileID: 838900053}
-    - {fileID: 83647763}
-    - {fileID: 137228235}
-    selectOrbsPanelRect: {fileID: 317282950}
-    selectOrbs:
-    - {fileID: 711162770}
-    - {fileID: 1630210639}
-    - {fileID: 1002020571}
-    LevelUpImage: {fileID: 2037586836}
-    ImageAnim: {fileID: 2037586835}
-    TextAnim: {fileID: 519925342}
-    OperateText: {fileID: 1827811700}
   _finishingPanel: {fileID: 2044077296}
   _finishingSound: {fileID: 8300000, guid: 5829a9f0c2de8fe4694501e80ff5d2a2, type: 3}
   _specialGauge: {fileID: 437108334}

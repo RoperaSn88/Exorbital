@@ -80,6 +80,7 @@ public class SceneManagerScript : MonoBehaviour
     [SerializeField] TextMeshProUGUI MoneyText;
     public BossClass BossInfo;
     public SettingUIClass Settings;
+    bool _isSettingSceneActive;
     [SerializeField] GameObject UpDownPanel;
     public GameObject MapCanvas;
     public GameObject MapPieceObject;
@@ -93,6 +94,8 @@ public class SceneManagerScript : MonoBehaviour
     public Transform BossPos;
     float RealMapSize;
     bool MapSet = false;
+    const float UnvisitedMiniMapAlpha = 0.5f;
+    HashSet<MapBaseScriptVer2> _revealedMiniMaps = new HashSet<MapBaseScriptVer2>();
     public SkillNodeClass SkillNodeInfos;
     public Image _finishingPanel;
     public AudioClip _finishingSound;
@@ -100,6 +103,7 @@ public class SceneManagerScript : MonoBehaviour
     [SerializeField] GameObject _specialOperateImage;
     [SerializeField] Animator _specialPanelAnim;
     [SerializeField] AudioClip _specialAudio;
+    public Image FadePanelImage => FadePanel;
 
     public delegate void ChangeWithController(int num);
     [NonSerialized] public ChangeWithController _changerController;
@@ -153,6 +157,8 @@ public class SceneManagerScript : MonoBehaviour
     Vector3 SavedPlayerPos = new Vector3(0, 0, 0);
     public void UpdatePlayerMapPos(Transform PlayerTrans, bool isRight)
     {
+        if (!MapSet || PlayerTrans == null || PlayerIconPos == null || MapCellsPos == null || RealMapSize <= 0f) return;
+
         Vector3 UseVec = PlayerTrans.position - SavedPlayerPos;
         if (UseVec.x > 0 && PlayerIconPos.anchoredPosition.x > 40) MapCellsPos.anchoredPosition -= new Vector2(UseVec.x, 0) * MapSize / RealMapSize;
         else if (UseVec.x < 0 && PlayerIconPos.anchoredPosition.x < -40) MapCellsPos.anchoredPosition -= new Vector2(UseVec.x, 0) * MapSize / RealMapSize;
@@ -196,7 +202,9 @@ public class SceneManagerScript : MonoBehaviour
         //背景設定　チュートリアルステージならばtrue
         if (gen == null) SetCameraBackGround(true);
         else SetCameraBackGround();
+        if (gen != null) SetupMiniMapTileMaps(gen);
         PlayerController.instance.ControlF = true;
+        SavedPlayerPos = PlayerController.instance.transform.position;
         //ForBattleData.instance.ReturnCalcurateData();
         if (!staticScript._hasData) SaveManager.Instance.SaveData();
 
@@ -208,6 +216,33 @@ public class SceneManagerScript : MonoBehaviour
             SaveManager.Instance.ReflexPlayerData();
             staticScript._hasData = false;
         }
+    }
+
+    void SetupMiniMapTileMaps(MapGeneraterVer2 gen)
+    {
+        _revealedMiniMaps.Clear();
+        if (gen == null || gen.MapParent == null)
+        {
+            MapSet = false;
+            return;
+        }
+
+        MapBaseScriptVer2[] maps = gen.MapParent.GetComponentsInChildren<MapBaseScriptVer2>(true);
+        foreach (MapBaseScriptVer2 map in maps)
+        {
+            if (map == null) continue;
+            map.SetMiniMapAlpha(UnvisitedMiniMapAlpha);
+        }
+
+        MapSet = maps.Length > 0;
+    }
+
+    public void RevealVisitedMiniMap(MapBaseScriptVer2 map)
+    {
+        if (map == null) return;
+        if (_revealedMiniMaps.Contains(map)) return;
+        map.SetMiniMapAlpha(1f);
+        _revealedMiniMaps.Add(map);
     }
 
     public void InvisibleUIs()
@@ -1048,219 +1083,19 @@ public class SceneManagerScript : MonoBehaviour
     //セッティング
     public void StartSetting()
     {
-        StartCoroutine(Setting());
+        if (_isSettingSceneActive || SceneManager.GetSceneByName("SettingScene").isLoaded) return;
+        StartCoroutine(LoadSettingSceneCoroutine());
     }
 
-    IEnumerator Setting()
+    IEnumerator LoadSettingSceneCoroutine()
     {
         Time.timeScale = 0f;
-        Settings.Base.SetActive(true);
-        Settings.BGMSlider.value = AudioManager.instance.BGMvolume;
-        Settings.SESlider.value = AudioManager.instance.SEvolume;
         PlayerController.instance.StopController();
-        Settings.Settingnum = 0;
-        GameObject[] TextureCanvases = GameObject.FindGameObjectsWithTag("TextureCanvas");
-        optionAction optAct = new optionAction();
-        optAct.Enable();
-
-        while (true)
-        {
-            Settings.Texts[Settings.Settingnum].DOFade(1f, 0.2f).SetUpdate(UpdateType.Normal, true);
-            yield return null;
-            yield return new WaitUntil(() => optAct.normal.SelectV.ReadValue<float>() == 1 || optAct.normal.SelectV.ReadValue<float>() == -1 || optAct.normal.SelectH.ReadValue<float>() == 1 || optAct.normal.SelectH.ReadValue<float>() == -1 ||
-            optAct.normal.decide.IsPressed() || optAct.normal.close.IsPressed() || optAct.normal.option.IsPressed());
-            if (optAct.normal.SelectV.ReadValue<float>() == -1 && Settings.Settingnum < 3)
-            {
-                Settings.Texts[Settings.Settingnum].DOFade(0.3f, 0.2f).SetUpdate(UpdateType.Normal, true);
-                Settings.Settingnum++;
-                if (Settings.Settingnum == 3) Settings.Settingnum = 0;
-                yield return new WaitUntil(() => optAct.normal.SelectV.ReadValue<float>() == 0);
-            }
-            else if (optAct.normal.SelectV.ReadValue<float>() == 1 && Settings.Settingnum > -1)
-            {
-                Settings.Texts[Settings.Settingnum].DOFade(0.3f, 0.2f).SetUpdate(UpdateType.Normal, true);
-                Settings.Settingnum--;
-                if (Settings.Settingnum == -1) Settings.Settingnum = 2;
-                yield return new WaitUntil(() => optAct.normal.SelectV.ReadValue<float>() == 0);
-            }
-
-            //細かい設定をする
-            if (Settings.Settingnum == 1 && optAct.normal.decide.IsPressed())
-            {
-                int detailPanelNum = 0; //パネルの番号
-                int detailNum = 0; //選んでいる欄の番号
-                Settings._pausePanel.SetActive(false);
-                Settings._detailSettingPanels[detailPanelNum].SetActive(true);
-                Settings._cameraHeightSlider.value = staticScript.CameraPos;
-                Settings._immeLevelToggle.isOn = staticScript.ImmeLevel;
-                yield return new WaitUntil(() => !optAct.normal.decide.IsPressed());
-                while (true)
-                {
-                    yield return null;
-
-                    Debug.Log($"Page:{detailPanelNum},num:{detailNum}");
-                    yield return new WaitUntil(() => optAct.normal.pageTab.ReadValue<float>() == 1 || optAct.normal.pageTab.ReadValue<float>() == -1
-                    || optAct.normal.SelectV.ReadValue<float>() == 1 || optAct.normal.SelectV.ReadValue<float>() == -1 || optAct.normal.SelectH.ReadValue<float>() == 1 || optAct.normal.SelectH.ReadValue<float>() == -1
-                    || optAct.normal.decide.IsPressed() || optAct.normal.close.IsPressed() || optAct.normal.option.IsPressed() );
-                    if (optAct.normal.close.IsPressed() || optAct.normal.option.IsPressed())
-                    {
-                        Settings._pausePanel.SetActive(true);
-                        Settings._detailSettingPanels[detailPanelNum].SetActive(false);
-                        yield return new WaitUntil(() => !optAct.normal.close.IsPressed() && !optAct.normal.option.IsPressed());
-                        break;
-                    }
-                    if (optAct.normal.decide.IsPressed() || optAct.normal.SelectH.ReadValue<float>() == 1 || optAct.normal.SelectH.ReadValue<float>() == -1)
-                    {
-                        switch (detailPanelNum)
-                        {
-                            //ゲームプレイの設定
-                            case 0:
-                                switch (detailNum)
-                                {
-                                    case 0:
-                                        if (optAct.normal.SelectH.ReadValue<float>() == -1)
-                                        {
-                                            AudioManager.instance.BGMvolume -= Time.unscaledDeltaTime;
-                                            Settings.BGMSlider.value = AudioManager.instance.BGMvolume;
-                                            AudioManager.instance.BGMsource.volume = AudioManager.instance.BGMvolume;
-                                            staticScript._bgmVolume = AudioManager.instance.BGMvolume;
-                                            continue;
-                                        }
-                                        if (optAct.normal.SelectH.ReadValue<float>() == 1)
-                                        {
-                                            AudioManager.instance.BGMvolume += Time.unscaledDeltaTime;
-                                            Settings.BGMSlider.value = AudioManager.instance.BGMvolume;
-                                            AudioManager.instance.BGMsource.volume = AudioManager.instance.BGMvolume;
-                                            staticScript._bgmVolume = AudioManager.instance.BGMvolume;
-                                            continue;
-                                        }
-                                        break;
-                                    case 1:
-                                        if (optAct.normal.SelectH.ReadValue<float>() == -1)
-                                        {
-                                            AudioManager.instance.SEvolume -= Time.unscaledDeltaTime;
-                                            Settings.SESlider.value = AudioManager.instance.SEvolume;
-                                            staticScript._seVolume = AudioManager.instance.SEvolume;
-                                            continue;
-                                        }
-                                        if (optAct.normal.SelectH.ReadValue<float>() == 1)
-                                        {
-                                            AudioManager.instance.SEvolume += Time.unscaledDeltaTime;
-                                            Settings.SESlider.value = AudioManager.instance.SEvolume;
-                                            staticScript._seVolume = AudioManager.instance.SEvolume;
-                                            continue;
-                                        }
-                                        break;
-                                }
-                                break;
-
-                            case 1:
-                                switch (detailNum)
-                                {
-                                    case 0:
-                                        if (optAct.normal.SelectH.ReadValue<float>() == -1)
-                                        {
-                                            Settings._cameraHeightSlider.value -= Time.unscaledDeltaTime * 2.5f;
-                                        }
-                                        else if (optAct.normal.SelectH.ReadValue<float>() == 1)
-                                        {
-                                            Settings._cameraHeightSlider.value += Time.unscaledDeltaTime * 2.5f;
-                                        }
-                                        C3F.ShoulderOffset = new Vector3(0, Settings._cameraHeightSlider.value, 0);
-                                        staticScript.CameraPos = Settings._cameraHeightSlider.value;
-                                        staticScript.CanvasRotate = staticScript.CalcurateCanvasRotate(staticScript.CameraPos);
-                                        foreach (var tex in TextureCanvases)
-                                        {
-                                            tex.transform.rotation = Quaternion.Euler(staticScript.CanvasRotate, tex.transform.rotation.eulerAngles.y, 0);
-                                            float keepY = tex.GetComponent<TextureKeepPos>().BeginKeepPosY;
-                                            tex.transform.localPosition = new Vector3(0, keepY - tex.transform.localScale.x * (1 - Mathf.Cos(Mathf.PI * staticScript.CanvasRotate / 180)) / 2, 0);
-                                        }
-                                        break;
-                                    case 1:
-                                        if (optAct.normal.decide.IsPressed())
-                                        {
-                                            staticScript.ImmeLevel = !staticScript.ImmeLevel;
-                                            Settings._immeLevelToggle.isOn = staticScript.ImmeLevel;
-                                            yield return new WaitUntil(()=>!optAct.normal.decide.IsPressed());
-                                        }
-                                        break;
-                                }
-                                break;
-                        }
-                        yield return null;
-                    }
-                    if (optAct.normal.pageTab.ReadValue<float>() == -1)
-                    {
-                        Settings.TextClass[detailPanelNum].Texts[detailNum].color = new Color(1, 1, 1, 0.3f);
-                        detailNum = 0;
-                        Settings._detailSettingPanels[detailPanelNum].SetActive(false);
-                        if (detailPanelNum == 0) detailPanelNum = Settings._detailSettingPanels.Length - 1;
-                        else detailPanelNum = detailPanelNum - 1;
-                        Settings._detailSettingPanels[detailPanelNum].SetActive(true);
-                        Settings.TextClass[detailPanelNum].Texts[detailNum].color = new Color(1, 1, 1, 1f);
-                        yield return new WaitUntil(() => optAct.normal.pageTab.ReadValue<float>() == 0);
-                    }
-                    if (optAct.normal.pageTab.ReadValue<float>() == 1)
-                    {
-                        Settings.TextClass[detailPanelNum].Texts[detailNum].color = new Color(1, 1, 1, 0.3f);
-                        detailNum = 0;
-                        Settings._detailSettingPanels[detailPanelNum].SetActive(false);
-                        if (detailPanelNum == Settings._detailSettingPanels.Length - 1) detailPanelNum = 0;
-                        else detailPanelNum = detailPanelNum + 1;
-                        Settings._detailSettingPanels[detailPanelNum].SetActive(true);
-                        Settings.TextClass[detailPanelNum].Texts[detailNum].color = new Color(1, 1, 1, 1f);
-                        yield return new WaitUntil(() => optAct.normal.pageTab.ReadValue<float>() == 0);
-                    }
-
-                    if (optAct.normal.SelectV.ReadValue<float>() == -1)
-                    {
-                        //Settings.Texts[Settings.Settingnum].DOFade(0.3f, 0.2f).SetUpdate(UpdateType.Normal, true);
-                        Settings.TextClass[detailPanelNum].Texts[detailNum].color = new Color(1, 1, 1, 0.3f);
-                        detailNum++;
-                        if (detailNum == 2) detailNum = 0;
-                        Settings.TextClass[detailPanelNum].Texts[detailNum].color = new Color(1, 1, 1, 1f);
-                        yield return new WaitUntil(() => optAct.normal.SelectV.ReadValue<float>() == 0);
-                    }
-                    else if (optAct.normal.SelectV.ReadValue<float>() == 1)
-                    {
-                        //Settings.Texts[Settings.Settingnum].DOFade(0.3f, 0.2f).SetUpdate(UpdateType.Normal, true);
-                        Settings.TextClass[detailPanelNum].Texts[detailNum].color = new Color(1, 1, 1, 0.3f);
-                        detailNum--;
-                        if (detailNum == -1) detailNum = 1;
-                        Settings.TextClass[detailPanelNum].Texts[detailNum].color = new Color(1, 1, 1, 1f);
-                        yield return new WaitUntil(() => optAct.normal.SelectV.ReadValue<float>() == 0);
-                    }
-                }
-            }
-
-            if (Settings.Settingnum == 0 && optAct.normal.decide.IsPressed() || optAct.normal.option.IsPressed())
-            {
-                //抜け出す
-                Debug.Log("Close");
-                Settings.Texts[Settings.Settingnum].DOFade(0.3f, 0.1f);
-                Time.timeScale = 1;
-                Settings.Base.SetActive(false);
-                PlayerController.instance.StartController();
-                Settings.Settingnum = 0;
-                yield return null;
-                break;
-            }
-
-            if (Settings.Settingnum == 2 && optAct.normal.decide.IsPressed())
-            {
-                FadePanel.gameObject.SetActive(true);
-                FadePanel.DOFade(1f, 1.5f).SetUpdate(UpdateType.Normal, true);
-                AudioManager.instance.StopBGM(1.5f);
-                yield return new WaitForSecondsRealtime(1.5f);
-                Time.timeScale = 1;
-                SceneManager.LoadScene("Title2");
-                break;
-            }
-
-            yield return null;
-        }
-
-        optAct.Dispose();
+        _isSettingSceneActive = true;
+        var sceneName = "SettingScene";
+        yield return SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+        yield return new WaitUntil(() => !SceneManager.GetSceneByName(sceneName).isLoaded);
+        _isSettingSceneActive = false;
     }
 
     public void StartSkillNodeCoroutine()
@@ -1525,29 +1360,6 @@ public class LevelingClass
     public GameObject BossEnemy;
 }
 
-[System.Serializable]
-
-public class SettingUIClass
-{
-    public int Settingnum;
-    public GameObject Base;
-    public TextMeshProUGUI[] Texts;
-    public Slider BGMSlider;
-    public Slider SESlider;
-    public GameObject _pausePanel;
-    public Slider _cameraHeightSlider;
-    public GameObject[] _detailSettingPanels;
-    public Toggle _immeLevelToggle;
-    public SettingUITextClass[] TextClass;
-}
-
-[System.Serializable]
-public class SettingUITextClass
-{
-    public List<TextMeshProUGUI> Texts;
-}
-
-[System.Serializable]
 public class SkillNodeClass
 {
     public GameObject root;
