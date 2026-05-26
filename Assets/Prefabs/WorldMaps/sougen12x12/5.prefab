@@ -4437,6 +4437,8 @@ MonoBehaviour:
   MapVec: {x: -2, y: 0, z: 0}
   MapNumber: {x: 0, y: 0, z: 0}
   Intss: 
+  _miniMapTilemaps:
+  - {fileID: 6334671587845549732}
 --- !u!1 &4689011434344360315
 GameObject:
   m_ObjectHideFlags: 0

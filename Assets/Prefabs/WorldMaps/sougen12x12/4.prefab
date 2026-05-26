@@ -3503,6 +3503,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abd147a47a40fd8478d2a38ddc4a7518, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mapType: 0
   MapInfo:
     Neighbor: 000000000100000000000000010000000000000001000000000000000000000000000000
     MapScale:
@@ -3566,6 +3567,8 @@ MonoBehaviour:
   MapVec: {x: 6, y: 0, z: 3}
   MapNumber: {x: 0, y: 0, z: 0}
   Intss: 
+  _miniMapTilemaps:
+  - {fileID: 272007004825524662}
 --- !u!1 &6759395662884558904
 GameObject:
   m_ObjectHideFlags: 0
