@@ -6491,8 +6491,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18
-  m_fontSizeBase: 18
+  m_fontSize: 12
+  m_fontSizeBase: 12
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -13761,7 +13761,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1331139519
 RectTransform:
   m_ObjectHideFlags: 0
@@ -22584,6 +22584,34 @@ MonoBehaviour:
   BGMclip: {fileID: 8300000, guid: f1071fb81871d68438b05b4eca6e9177, type: 3}
   RogueLikeLevelUps: []
   BossPos: {fileID: 0}
+  SkillNodeInfos:
+    root: {fileID: 1435876340}
+    OrbSprites:
+    - {fileID: 21300000, guid: aa721322e46d4804fb3253fb610522a5, type: 3}
+    - {fileID: 21300000, guid: f72c7bb6dca65ad41ac80f3b6e047802, type: 3}
+    - {fileID: 21300000, guid: 9b110ba7eecbb7c4fba7fde461ccb7df, type: 3}
+    skillNodePanelRect: {fileID: 2041179713}
+    selectOrbImage:
+    - {fileID: 36536946}
+    - {fileID: 1029729855}
+    selectOrbText: {fileID: 1015153245}
+    nextNodeExplainText: {fileID: 1711715331}
+    nowLevelText: {fileID: 1609670383}
+    nextLevelText: {fileID: 908116689}
+    NeedOrbsRect: {fileID: 1154798825}
+    NeedOrbsText:
+    - {fileID: 838900053}
+    - {fileID: 83647763}
+    - {fileID: 137228235}
+    selectOrbsPanelRect: {fileID: 317282950}
+    selectOrbs:
+    - {fileID: 711162770}
+    - {fileID: 1630210639}
+    - {fileID: 1002020571}
+    LevelUpImage: {fileID: 2037586836}
+    ImageAnim: {fileID: 2037586835}
+    TextAnim: {fileID: 519925342}
+    OperateText: {fileID: 1827811700}
   _finishingPanel: {fileID: 2044077296}
   _finishingSound: {fileID: 8300000, guid: 5829a9f0c2de8fe4694501e80ff5d2a2, type: 3}
   _specialGauge: {fileID: 437108334}
@@ -25972,8 +26000,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18
-  m_fontSizeBase: 18
+  m_fontSize: 12
+  m_fontSizeBase: 12
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -26039,7 +26067,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tmp: {fileID: 2085426939}
   _texts:
-  - "\u672A\u8A2D\u5B9A"
+  - "W/A/S/D\nQ/E\nJ\nI\nSpace\nK\nK\u2192WASD\nO\nO"
   - "<sprite name=\"key_leftStick\">\n<sprite name=\"key_rightStick\">\n<sprite name=\"key_x\">\n<sprite
     name=\"key_y\">\n<sprite name=\"key_a\">\n<sprite name=\"key_rb\">\n<sprite name=\"key_rb\">
     \u2192<sprite name=\"key_leftStick\">\n<sprite name=\"key_lt\">\n<sprite name=\"key_rt>"

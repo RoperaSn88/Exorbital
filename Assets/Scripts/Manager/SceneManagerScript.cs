@@ -1336,6 +1336,7 @@ public class LevelingClass
     public GameObject BossEnemy;
 }
 
+[System.Serializable]
 public class SkillNodeClass
 {
     public GameObject root;
