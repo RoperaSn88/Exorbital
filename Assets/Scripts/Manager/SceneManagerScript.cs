@@ -512,14 +512,14 @@ public class SceneManagerScript : MonoBehaviour
             Destroy(v.gameObject);
         }
         SceneLoader.Instance.isBreaking = false;
-        SceneLoader.Instance.SceneLoadNumber(11); //洞窟のシーンナンバー
+        SceneLoader.Instance.SceneLoadNumber(5); //洞窟のシーンナンバー
         TimerReset();
         PlayerController.instance.MovedStage();
         InvisibleUIs();
         yield return new WaitForSeconds(1.0f);
         RenderSettings.fogStartDistance = 10;
         RenderSettings.fogEndDistance = 30;
-        SceneLoader.Instance.SceneID = 11; //洞窟のシーンナンバー
+        SceneLoader.Instance.SceneID = 5; //洞窟のシーンナンバー
         PlayerController.instance.StartReviveCoroutine();
         PlayerController.instance.GetComponent<ForBattleData>().PlayerReviveAction();
         LevelCount = 0;
