@@ -251,7 +251,7 @@ MonoBehaviour:
   Searcher: {fileID: 0}
   texture: {fileID: 8751745820432839205}
   Size: 1
-  Speed: 3.5
+  Speed: 2
   AttackDistance: 2
   Following: 0
   Nav: {fileID: 3511354138809006382}

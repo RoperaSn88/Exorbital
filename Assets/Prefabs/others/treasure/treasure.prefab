@@ -162,7 +162,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1723349137154228429, guid: 1ae5e10ed25380748b097d2dd20bc634, type: 3}
       propertyPath: m_text
-      value: B
+      value: "\u3007"
       objectReference: {fileID: 0}
     - target: {fileID: 2509592272370661425, guid: 1ae5e10ed25380748b097d2dd20bc634, type: 3}
       propertyPath: m_Pivot.x

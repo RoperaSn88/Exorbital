@@ -4379,6 +4379,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 6902998975386642801}
   - {fileID: 7583911967508515540}
   - {fileID: 1079517375261663183}
   - {fileID: 3831954273016058154}
@@ -4425,7 +4426,7 @@ MonoBehaviour:
   - {fileID: 4147373761779402496}
   - {fileID: 2030004397496063766}
   EnemySpawnPoses:
-  - Counts: 5
+  - Counts: 2
     isMiddle: 0
     Trans: {fileID: 1079517375261663183}
   TreasureSpawnPoses: []
@@ -4434,9 +4435,11 @@ MonoBehaviour:
   CenterToStart: {x: 0, y: 0, z: 0}
   TrueNum: 0
   EnterNum: 0
-  MapVec: {x: -2, y: 0, z: 0}
+  MapVec: {x: -11, y: 0, z: 7}
   MapNumber: {x: 0, y: 0, z: 0}
   Intss: 
+  _miniMapTilemaps:
+  - {fileID: 6334671587845549732}
 --- !u!1 &4689011434344360315
 GameObject:
   m_ObjectHideFlags: 0
@@ -4812,6 +4815,59 @@ Grid:
   m_CellGap: {x: 0, y: 0, z: 0}
   m_CellLayout: 0
   m_CellSwizzle: 1
+--- !u!1 &6996954270535373558
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6902998975386642801}
+  - component: {fileID: 2630836254687531942}
+  m_Layer: 20
+  m_Name: MapCollider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6902998975386642801
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6996954270535373558}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5613086003868101153}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &2630836254687531942
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6996954270535373558}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 23.823765, y: 4, z: 23.199482}
+  m_Center: {x: -6.012697, y: 0, z: -6.2484226}
 --- !u!1 &7428492348980306791
 GameObject:
   m_ObjectHideFlags: 0

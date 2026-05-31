@@ -1396,6 +1396,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 7725462736709165446}
   - {fileID: 8792058317168904161}
   - {fileID: 6984603139183122239}
   - {fileID: 7991293718381869985}
@@ -1414,6 +1415,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abd147a47a40fd8478d2a38ddc4a7518, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mapType: 0
   MapInfo:
     Neighbor: 000000000000000000000000000000000000000001000000000000000100000000000000
     MapScale:
@@ -1442,9 +1444,11 @@ MonoBehaviour:
   CenterToStart: {x: 0, y: 0, z: 0}
   TrueNum: 0
   EnterNum: 0
-  MapVec: {x: 0, y: 0, z: 0}
+  MapVec: {x: 0, y: 0, z: -4}
   MapNumber: {x: 0, y: 0, z: 0}
   Intss: 
+  _miniMapTilemaps:
+  - {fileID: 4737222640748830997}
 --- !u!1 &2276925609034711310
 GameObject:
   m_ObjectHideFlags: 0
@@ -3447,6 +3451,59 @@ TilemapRenderer:
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
   m_MaskInteraction: 0
+--- !u!1 &6771492508374539667
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7725462736709165446}
+  - component: {fileID: 1664353012841083338}
+  m_Layer: 20
+  m_Name: MapCollider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7725462736709165446
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6771492508374539667}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1244889698922211335}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1664353012841083338
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6771492508374539667}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 31.770071, y: 8.742014, z: 16.234634}
+  m_Center: {x: -7.618924, y: -2.371007, z: 0.24874115}
 --- !u!1 &6995030835306101115
 GameObject:
   m_ObjectHideFlags: 0

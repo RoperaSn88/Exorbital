@@ -252,7 +252,7 @@ MonoBehaviour:
   Searcher: {fileID: 0}
   texture: {fileID: 8751745820432839205}
   Size: 1
-  Speed: 5
+  Speed: 6
   AttackDistance: 2
   Following: 0
   Nav: {fileID: 3511354138809006382}
@@ -295,7 +295,7 @@ MonoBehaviour:
     green: 4
     red: 3
     blue: 2
-  AttackPoint: 26
+  AttackPoint: 7
   RedPoint: 0
   GreenPoint: 0
   BluePoint: 0

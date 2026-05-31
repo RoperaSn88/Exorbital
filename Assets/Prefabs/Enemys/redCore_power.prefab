@@ -120,7 +120,7 @@ MonoBehaviour:
     green: 0
     red: 0
     blue: 0
-  AttackPoint: 67
+  AttackPoint: 14
   RedPoint: 20
   GreenPoint: 0
   BluePoint: 0

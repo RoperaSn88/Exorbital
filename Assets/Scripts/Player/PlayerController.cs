@@ -377,7 +377,7 @@ public class PlayerController : MonoBehaviour
     {
         if (treasure != null)
         {
-            if (!treasure.isOpen && Input.GetButtonDown("CircleButton"))
+            if (!treasure.isOpen)
             {
                 treasure.OpenTreasure();
                 treasure = null;
@@ -883,7 +883,6 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator ReviveCoroutine()
     {
-        Debug.Log("REVIVE COROUTINE");
         PlayerAnim.SetBool("DeadF", false);
         PlayerAnim.SetBool("ReviveF",true);
         _specialTechCoolTime = 0;

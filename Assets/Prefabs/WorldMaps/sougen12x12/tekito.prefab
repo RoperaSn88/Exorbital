@@ -1830,23 +1830,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abd147a47a40fd8478d2a38ddc4a7518, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mapType: 1
   MapInfo:
     Neighbor: 000000000000000000000000010000000000000001000000000000000100000000000000
     MapScale:
     - LoopholeNumber: 3
       Classes:
       - Scale: {x: 0, y: 0, z: 0}
-        ExitNum: 0
         EndVec: {x: 0, y: 0, z: 0}
     - LoopholeNumber: 5
       Classes:
       - Scale: {x: 0, y: 0, z: 0}
-        ExitNum: 0
         EndVec: {x: 0, y: 0, z: 0}
     - LoopholeNumber: 7
       Classes:
       - Scale: {x: 0, y: 0, z: 0}
-        ExitNum: 0
         EndVec: {x: 0, y: 0, z: 0}
     MapExits:
     - ExitNum: 5
@@ -1881,6 +1879,7 @@ MonoBehaviour:
   MapVec: {x: 0, y: 0, z: 0}
   MapNumber: {x: 0, y: 0, z: 0}
   Intss: 
+  _miniMapTilemaps: []
 --- !u!1 &6723689755465781329
 GameObject:
   m_ObjectHideFlags: 0

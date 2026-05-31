@@ -36,11 +36,20 @@ public class PlayerMiniMapRevealer : MonoBehaviour
         _revealedColliderIds.Clear();
     }
 
+    public void OnClear()
+    {
+        _revealedColliderIds.Clear();
+    }
+
     void RevealMap(Collider other)
     {
         if (SceneManagerScript.instance == null || other == null) return;
         int colliderId = other.GetInstanceID();
-        if (_revealedColliderIds.Contains(colliderId)) return;
+        if (_revealedColliderIds.Contains(colliderId))
+        {
+            
+            return;
+        }
 
         MapBaseScriptVer2 map = other.GetComponentInParent<MapBaseScriptVer2>();
         if (map == null) return;

@@ -48,8 +48,8 @@ TagManager:
   - ShootObject
   - 
   - MiniMap
-  - 
-  - 
+  - StageArea
+  - MapCollider
   - 
   - 
   - 

@@ -1333,6 +1333,59 @@ TilemapRenderer:
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
   m_MaskInteraction: 0
+--- !u!1 &2583272783181980876
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1317441856113146129}
+  - component: {fileID: 4281460491791750983}
+  m_Layer: 20
+  m_Name: MapCollider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1317441856113146129
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2583272783181980876}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8103485210067220394}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &4281460491791750983
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2583272783181980876}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 31.62991, y: 8.742014, z: 32.498837}
+  m_Center: {x: -7.648077, y: -2.371007, z: 8.786262}
 --- !u!1 &2688593232008773130
 GameObject:
   m_ObjectHideFlags: 0
@@ -4566,6 +4619,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1317441856113146129}
   - {fileID: 7255495748095059176}
   - {fileID: 3162685148302238706}
   - {fileID: 3728483467852821166}
@@ -4586,6 +4640,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abd147a47a40fd8478d2a38ddc4a7518, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mapType: 1
   MapInfo:
     Neighbor: 000000000100000000000000000000000000000001000000000000000100000000000000
     MapScale:
@@ -4631,7 +4686,7 @@ MonoBehaviour:
   - {fileID: 1909940687054458544}
   - {fileID: 5619169765287886206}
   EnemySpawnPoses:
-  - Counts: 3
+  - Counts: 4
     isMiddle: 0
     Trans: {fileID: 5091551174224323695}
   TreasureSpawnPoses: []
@@ -4640,9 +4695,10 @@ MonoBehaviour:
   CenterToStart: {x: 0, y: 0, z: 0}
   TrueNum: 0
   EnterNum: 0
-  MapVec: {x: 0, y: 0, z: 0}
+  MapVec: {x: 7, y: 0, z: 5}
   MapNumber: {x: 0, y: 0, z: 0}
   Intss: 
+  _miniMapTilemaps: []
 --- !u!1 &7263326304336886283
 GameObject:
   m_ObjectHideFlags: 0

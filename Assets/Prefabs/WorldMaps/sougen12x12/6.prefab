@@ -3286,6 +3286,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 954958657264582835}
   - {fileID: 7387523565666492556}
   - {fileID: 6622910339013110428}
   - {fileID: 3139750859714529130}
@@ -3308,6 +3309,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abd147a47a40fd8478d2a38ddc4a7518, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mapType: 1
   MapInfo:
     Neighbor: 000000000100000000000000010000000000000001000000000000000100000000000000
     MapScale:
@@ -3378,10 +3380,10 @@ MonoBehaviour:
   - {fileID: 884660459419109605}
   - {fileID: 1986103268411852206}
   EnemySpawnPoses:
-  - Counts: 5
+  - Counts: 2
     isMiddle: 0
     Trans: {fileID: 6622910339013110428}
-  - Counts: 6
+  - Counts: 1
     isMiddle: 0
     Trans: {fileID: 3139750859714529130}
   TreasureSpawnPoses: []
@@ -3390,9 +3392,11 @@ MonoBehaviour:
   CenterToStart: {x: 0, y: 0, z: 0}
   TrueNum: 0
   EnterNum: 0
-  MapVec: {x: 4, y: 0, z: 3}
+  MapVec: {x: -12, y: 0, z: 9}
   MapNumber: {x: 0, y: 0, z: 0}
   Intss: 
+  _miniMapTilemaps:
+  - {fileID: 1588438860838295079}
 --- !u!1 &4144765304687884430
 GameObject:
   m_ObjectHideFlags: 0
@@ -3516,6 +3520,59 @@ TilemapRenderer:
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
   m_MaskInteraction: 0
+--- !u!1 &4155209410764283700
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 954958657264582835}
+  - component: {fileID: 4474004210748190057}
+  m_Layer: 20
+  m_Name: MapCollider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &954958657264582835
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4155209410764283700}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 613108727630770525}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &4474004210748190057
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4155209410764283700}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 35.90883, y: 4, z: 35.880066}
+  m_Center: {x: 0.029834747, y: 0, z: 0.091869354}
 --- !u!1 &4610128423922159529
 GameObject:
   m_ObjectHideFlags: 0

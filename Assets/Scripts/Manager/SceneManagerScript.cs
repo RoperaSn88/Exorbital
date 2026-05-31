@@ -15,6 +15,7 @@ using Unity.VisualScripting;
 using System.Linq;
 using Manager.SelectElement;
 using System.Threading.Tasks;
+using Cysharp.Threading.Tasks.Triggers;
 
 public class SceneManagerScript : MonoBehaviour
 {
@@ -82,6 +83,7 @@ public class SceneManagerScript : MonoBehaviour
     public SettingUIClass Settings;
     bool _isSettingSceneActive;
     [SerializeField] GameObject UpDownPanel;
+    [SerializeField] PlayerMiniMapRevealer miniMapRevealer;
     public GameObject MapCanvas;
     public GameObject MapPieceObject;
 
@@ -202,7 +204,11 @@ public class SceneManagerScript : MonoBehaviour
         //背景設定　チュートリアルステージならばtrue
         if (gen == null) SetCameraBackGround(true);
         else SetCameraBackGround();
-        if (gen != null) SetupMiniMapTileMaps(gen);
+        if (gen != null)
+        {
+            miniMapRevealer.OnClear();
+            SetupMiniMapTileMaps(gen);
+        }
         PlayerController.instance.ControlF = true;
         SavedPlayerPos = PlayerController.instance.transform.position;
         //ForBattleData.instance.ReturnCalcurateData();
@@ -232,6 +238,13 @@ public class SceneManagerScript : MonoBehaviour
         {
             if (map == null) continue;
             map.SetMiniMapAlpha(UnvisitedMiniMapAlpha);
+        }
+
+        // 0番目はスタートマップなので最初から表示しておく
+        if (maps.Length > 0)
+        {
+            maps[0].SetMiniMapAlpha(1f);
+            _revealedMiniMaps.Add(maps[0]);
         }
 
         MapSet = maps.Length > 0;
@@ -1360,6 +1373,7 @@ public class LevelingClass
     public GameObject BossEnemy;
 }
 
+[System.Serializable]
 public class SkillNodeClass
 {
     public GameObject root;
