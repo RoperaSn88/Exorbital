@@ -403,7 +403,7 @@ public partial class @OperateActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""e73c6c0f-aad3-4752-9468-1e95f144530b"",
-                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""path"": ""<XInputController>/buttonSouth"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -415,6 +415,17 @@ public partial class @OperateActions: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""55afd504-6c6a-4556-9aab-518314697168"",
                     ""path"": ""<Keyboard>/l"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Act"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""316cee1f-70ff-49a3-9b29-a6c35069cd86"",
+                    ""path"": ""<DualShockGamepad>/buttonEast"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",

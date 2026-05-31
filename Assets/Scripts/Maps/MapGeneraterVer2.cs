@@ -65,6 +65,7 @@ public class MapGeneraterVer2 : MonoBehaviour
         MapBaseScriptVer2 StartMapS = Instantiate(StartMap.gameObject, MapParent).GetComponent<MapBaseScriptVer2>();
         StartMapS.transform.position = Vector3.zero;
         GeneratedMaps.Add(StartMapS); // 生成されたマップを追跡
+        
         yield return null;
         Vector3 MapNumber=Vector3.zero;
 
@@ -694,7 +695,9 @@ public class MapGeneraterVer2 : MonoBehaviour
         yield return null;
 
         // マップ生成統計をログに出力
+#if UNITY_EDITOR
         LogMapGenerationStats();
+#endif
 
         //始めるぞ
         

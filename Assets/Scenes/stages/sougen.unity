@@ -171,7 +171,7 @@ MonoBehaviour:
   treasurePrefab: {fileID: 4735461898932471664, guid: 801f32b6e69f5784f8e123ce82bcb201, type: 3}
   StartMap: {fileID: 6106627255307974965, guid: 1c3151b65f013834a93d4285373ae471, type: 3}
   EndArea: {fileID: 1962641766051191844, guid: 026fddba84b0ec04c9e149031ba170cc, type: 3}
-  MapCount: 3
+  MapCount: 10
   MiniMapCountMin: 2
   MiniMapCountMax: 3
   ChallengeMapCounts: 0
