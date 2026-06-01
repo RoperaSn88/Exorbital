@@ -17708,7 +17708,7 @@ MonoBehaviour:
   PlayerScene:
     m_SceneName: PlayerSceneVer3
   targetScene:
-    m_SceneName: saikutuzyo
+    m_SceneName: sougen
   SceneID: 0
   ScenePairs:
   - Scene:
