@@ -360,9 +360,18 @@ public class MapGeneraterVer2 : MonoBehaviour
                 bool generatedTrueEnd = false;
                 while (TryTakeBranchSeed(lastMainMap, ref usePrimaryBranchSeed, SaveVec, MapNumber, TrueNum, out BranchSeed branchSeed))
                 {
-                    if (TryGenerateTrueEndBranch(branchSeed, enemyMapMaterials, normalMapMaterials, remainingEnds, targetSceneIndex, EnemySpawns, TreasureSpawns))
+                    TrueEndBranchResult branchResult = TryGenerateTrueEndBranch(branchSeed, enemyMapMaterials, normalMapMaterials, remainingEnds, targetSceneIndex, EnemySpawns, TreasureSpawns);
+                    if (branchResult == TrueEndBranchResult.GeneratedTrueEnd)
                     {
                         generatedTrueEnd = true;
+                        break;
+                    }
+
+                    // 途中まで枝を伸ばしたあとは、その枝を mini end で閉じて確定させている。
+                    // ここで別 seed に切り替えると「生成途中で別の道に乗り換える」挙動になるため、
+                    // 何か 1 マップでも生成した枝については再試行せず、次の分岐先判定へ進む。
+                    if (branchResult == TrueEndBranchResult.ClosedCommittedBranch)
+                    {
                         break;
                     }
                 }
@@ -849,12 +858,13 @@ public class MapGeneraterVer2 : MonoBehaviour
         return false;
     }
 
-    bool TryGenerateTrueEndBranch(BranchSeed branchSeed, List<MapBaseScriptVer2> enemyMapMaterials, List<MapBaseScriptVer2> normalMapMaterials, List<MapBaseScriptVer2> remainingEnds, int targetSceneIndex, List<EnemySpawnClass> enemySpawns, List<Transform> treasureSpawns)
+    TrueEndBranchResult TryGenerateTrueEndBranch(BranchSeed branchSeed, List<MapBaseScriptVer2> enemyMapMaterials, List<MapBaseScriptVer2> normalMapMaterials, List<MapBaseScriptVer2> remainingEnds, int targetSceneIndex, List<EnemySpawnClass> enemySpawns, List<Transform> treasureSpawns)
     {
         int ran = UnityEngine.Random.Range(MiniMapCountMin, MiniMapCountMax);
         int branchTrueNum = branchSeed.TrueNum;
         Vector3 branchMapNumber = branchSeed.MapPosition;
         Vector3 branchSaveVec = branchSeed.SaveVec;
+        bool hasInstantiatedBranchMap = false;
 
         while (ran > 0)
         {
@@ -863,10 +873,13 @@ public class MapGeneraterVer2 : MonoBehaviour
                 !TrySelectMapMaterial(normalMapMaterials, branchMapNumber, branchTrueNum, Fails, true, out selectMaterial))
             {
                 CloseBranchWithMiniEnd(branchMapNumber, branchSaveVec, branchTrueNum, treasureSpawns);
-                return false;
+                return hasInstantiatedBranchMap ? TrueEndBranchResult.ClosedCommittedBranch : TrueEndBranchResult.CouldNotCommitBranch;
             }
 
             MapBaseScriptVer2 generatedMap = InstantiateConnectedMap(selectMaterial, branchMapNumber, branchSaveVec, branchTrueNum);
+            // ここに到達した時点で、この seed を使った枝は実際に盤面へ展開済み。
+            // 以降に失敗しても別 seed へ乗り換えず、この枝を mini end で閉じて終了させる。
+            hasInstantiatedBranchMap = true;
             CollectEnemySpawns(generatedMap, enemySpawns);
             CollectTreasureSpawns(generatedMap, treasureSpawns);
 
@@ -874,7 +887,7 @@ public class MapGeneraterVer2 : MonoBehaviour
             if (nextLoophole == null)
             {
                 CloseBranchWithMiniEnd(branchMapNumber, branchSaveVec, branchTrueNum, treasureSpawns);
-                return false;
+                return TrueEndBranchResult.ClosedCommittedBranch;
             }
 
             branchSaveVec = nextLoophole.position;
@@ -889,11 +902,11 @@ public class MapGeneraterVer2 : MonoBehaviour
             AssignNextSceneToEndArea(generatedEnd, ResolveNextScene(endMaterial));
             CollectTreasureSpawns(generatedEnd, treasureSpawns);
             remainingEnds.Remove(endMaterial);
-            return true;
+            return TrueEndBranchResult.GeneratedTrueEnd;
         }
 
         CloseBranchWithMiniEnd(branchMapNumber, branchSaveVec, branchTrueNum, treasureSpawns);
-        return false;
+        return hasInstantiatedBranchMap ? TrueEndBranchResult.ClosedCommittedBranch : TrueEndBranchResult.CouldNotCommitBranch;
     }
 
     void CloseBranchWithMiniEnd(Vector3 mapNumber, Vector3 saveVec, int connectionDirection, List<Transform> treasureSpawns)
@@ -1099,6 +1112,13 @@ public class BranchSeed
     public int TrueNum;
     public Vector3 MapPosition;
     public Vector3 SaveVec;
+}
+
+public enum TrueEndBranchResult
+{
+    CouldNotCommitBranch,
+    ClosedCommittedBranch,
+    GeneratedTrueEnd
 }
 
 [System.Serializable]
