@@ -167,6 +167,7 @@ MonoBehaviour:
     m_SceneName: sougen
   NextScene:
     m_SceneName: cave
+  NextScenes: []
   color: {r: 1, g: 0.8393313, b: 0, a: 1}
   treasurePrefab: {fileID: 4735461898932471664, guid: 801f32b6e69f5784f8e123ce82bcb201, type: 3}
   StartMap: {fileID: 6106627255307974965, guid: 1c3151b65f013834a93d4285373ae471, type: 3}

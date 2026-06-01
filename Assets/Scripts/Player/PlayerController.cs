@@ -979,6 +979,12 @@ public class PlayerController : MonoBehaviour
     {
         if (col.CompareTag("EndArea") && !CheckEnd)
         {
+            StageEndArea stageEndArea = col.GetComponent<StageEndArea>();
+            if (stageEndArea == null)
+            {
+                stageEndArea = col.GetComponentInParent<StageEndArea>();
+            }
+            if (stageEndArea != null) SceneManagerScript.instance.SetSelectedNextStageScene(stageEndArea.NextScene);
             CheckEnd = true;
             StartCoroutine(StageEndCoroutine());
         }

@@ -8,6 +8,7 @@ public class MapGeneraterVer2 : MonoBehaviour
 {
     public SceneObject thisScene;
     public SceneObject NextScene;
+    public SceneObject[] NextScenes;
     public Color color;
     public GameObject treasurePrefab;
     public MapBaseScriptVer2 StartMap;
@@ -63,6 +64,7 @@ public class MapGeneraterVer2 : MonoBehaviour
         List<EnemySpawnClass> EnemySpawns=new List<EnemySpawnClass>();
         List<Transform> TreasureSpawns=new List<Transform>();
         MapBaseScriptVer2 StartMapS = Instantiate(StartMap.gameObject, MapParent).GetComponent<MapBaseScriptVer2>();
+        MapBaseScriptVer2 lastMainMap = StartMapS;
         StartMapS.transform.position = Vector3.zero;
         GeneratedMaps.Add(StartMapS); // 生成されたマップを追跡
         
@@ -287,6 +289,7 @@ public class MapGeneraterVer2 : MonoBehaviour
                 GeneratedMap.SaveMapNumbers(MapNumbers, MapNumber, ReverseNum(TrueNum));
                 //入口の番号を保存しておく
                 GeneratedMap.MapNumber = MapNumber;
+                lastMainMap = GeneratedMap;
 
                 //中心から入り口までの距離を図る
                 GeneratedMap.CenterToStart = GeneratedMap.transform.position - LoopHoleVec.position;
@@ -337,38 +340,48 @@ public class MapGeneraterVer2 : MonoBehaviour
         }
 
         //ゴールの生成
-        //ただし、４方向すべてにゴールを作らないといけない。
-        List<MapBaseScriptVer2> AllEnds=new List<MapBaseScriptVer2>(Ends);
-        MapBaseScriptVer2 EndMaterial=null;
-        foreach (MapBaseScriptVer2 end in AllEnds){
-            foreach(MapLoopholeVer2 hole in end.Loopholes){
-                if(hole.num==ReverseNum(TrueNum)){
-                    EndMaterial=end;
+        List<MapBaseScriptVer2> remainingEnds = new List<MapBaseScriptVer2>(Ends);
+        List<int> targetEndSceneIndices = GetConfiguredEndSceneIndices(remainingEnds);
+        if (targetEndSceneIndices.Count <= 1)
+        {
+            int targetSceneIndex = targetEndSceneIndices.Count > 0 ? targetEndSceneIndices[0] : -1;
+            if (TrySelectEndMapMaterial(remainingEnds, MapNumber, TrueNum, Fails, targetSceneIndex, out MapBaseScriptVer2 endMaterial))
+            {
+                MapBaseScriptVer2 generatedEnd = InstantiateConnectedMap(endMaterial, MapNumber, SaveVec, TrueNum);
+                AssignNextSceneToEndArea(generatedEnd, ResolveNextScene(endMaterial));
+                CollectTreasureSpawns(generatedEnd, TreasureSpawns);
+            }
+        }
+        else
+        {
+            bool usePrimaryBranchSeed = true;
+            foreach (int targetSceneIndex in targetEndSceneIndices)
+            {
+                bool generatedTrueEnd = false;
+                while (TryTakeBranchSeed(lastMainMap, ref usePrimaryBranchSeed, SaveVec, MapNumber, TrueNum, out BranchSeed branchSeed))
+                {
+                    TrueEndBranchResult branchResult = TryGenerateTrueEndBranch(branchSeed, enemyMapMaterials, normalMapMaterials, remainingEnds, targetSceneIndex, EnemySpawns, TreasureSpawns);
+                    if (branchResult == TrueEndBranchResult.GeneratedTrueEnd)
+                    {
+                        generatedTrueEnd = true;
+                        break;
+                    }
+
+                    // 途中まで生成した枝は mini end で閉じた時点で確定させる。
+                    // そのうえで continue によって同じ targetSceneIndex のまま次の未使用 seed を試し、
+                    // NextScenes に設定した種類数ぶんの true end を確保できるようにする。
+                    if (branchResult == TrueEndBranchResult.ClosedCommittedBranch)
+                    {
+                        continue;
+                    }
+                }
+
+                if (!generatedTrueEnd)
+                {
+                    Debug.LogWarning($"Could not generate true end branch for scene index {targetSceneIndex}.");
                 }
             }
         }
-
-        MapBaseScriptVer2 GeneratedMap2=Instantiate(EndMaterial.gameObject,MapParent).GetComponent<MapBaseScriptVer2>();
-        GeneratedMaps.Add(GeneratedMap2); // 生成されたマップを追跡
-        Transform LoopHoleVec2=transform;
-        foreach(MapLoopholeVer2 holee in GeneratedMap2.Loopholes)holee.CenterToThisLoopHole=(GeneratedMap2.transform.position-holee.transform.position);
-        foreach(MapLoopholeVer2 holee in GeneratedMap2.Loopholes){
-            if(MatchMapNum(TrueNum,holee.num)){
-                LoopHoleVec2=holee.transform;
-                GeneratedMap2.Loopholes.Remove(holee);
-                GeneratedMap2.MapInfo.Neighbor[ReverseNum(TrueNum)]=0;
-                break;
-            }
-        }
-
-        GeneratedMap2.SaveMapNumbers(MapNumbers,MapNumber,ReverseNum(TrueNum));
-        GeneratedMap2.MapNumber=MapNumber;
-
-        GeneratedMap2.CenterToStart = GeneratedMap2.transform.position - LoopHoleVec2.position;
-        LoopHoleVec2.position = SaveVec;
-        
-        GeneratedMap2.transform.position = SaveVec + GeneratedMap2.CenterToStart;
-        LoopHoleVec2.position = SaveVec;
 
         //Instantiate(EndArea,GeneratedMap2.EndSpawnPos);
 
@@ -706,6 +719,252 @@ public class MapGeneraterVer2 : MonoBehaviour
 
     // Update is called once per frame
 
+    void CollectEnemySpawns(MapBaseScriptVer2 generatedMap, List<EnemySpawnClass> enemySpawns)
+    {
+        if (!generatedMap.ShouldSpawnEnemies() || generatedMap.EnemySpawnPoses.Count == 0) return;
+
+        foreach (EnemySpawnClass trans in generatedMap.EnemySpawnPoses)
+        {
+            enemySpawns.Add(trans);
+        }
+    }
+
+    void CollectTreasureSpawns(MapBaseScriptVer2 generatedMap, List<Transform> treasureSpawns)
+    {
+        if (generatedMap.TreasureSpawnPoses.Count == 0) return;
+
+        foreach (Transform trans in generatedMap.TreasureSpawnPoses)
+        {
+            treasureSpawns.Add(trans);
+        }
+    }
+
+    List<int> GetConfiguredEndSceneIndices(List<MapBaseScriptVer2> materials)
+    {
+        List<int> sceneIndices = new List<int>();
+        if (NextScenes == null || NextScenes.Length == 0) return sceneIndices;
+
+        foreach (MapBaseScriptVer2 map in materials)
+        {
+            int sceneIndex = ResolveNextSceneIndex(map);
+            if (sceneIndex < 0 || sceneIndex >= NextScenes.Length) continue;
+            SceneObject nextScene = NextScenes[sceneIndex];
+            if (nextScene == null || string.IsNullOrEmpty(nextScene.m_SceneName)) continue;
+            if (!sceneIndices.Contains(sceneIndex))
+            {
+                sceneIndices.Add(sceneIndex);
+            }
+        }
+
+        return sceneIndices;
+    }
+
+    int ResolveNextSceneIndex(MapBaseScriptVer2 endMap)
+    {
+        int nextSceneCount = NextScenes == null ? 0 : NextScenes.Length;
+        if (nextSceneCount == 0) return -1;
+        if (endMap == null) return -1;
+        return Mathf.Clamp(endMap.NextSceneIndex, 0, nextSceneCount - 1);
+    }
+
+    SceneObject ResolveNextScene(MapBaseScriptVer2 endMap)
+    {
+        if (NextScenes == null || NextScenes.Length == 0) return NextScene;
+        return NextScenes[ResolveNextSceneIndex(endMap)];
+    }
+
+    bool TrySelectEndMapMaterial(List<MapBaseScriptVer2> materials, Vector3 mapNumber, int connectionDirection, List<FailLoophoolClass> failedLoopholes, int targetSceneIndex, out MapBaseScriptVer2 selectedMap)
+    {
+        if (targetSceneIndex < 0 && NextScenes != null && NextScenes.Length > 0)
+        {
+            selectedMap = null;
+            return false;
+        }
+
+        List<MapBaseScriptVer2> sceneSpecificMaterials = new List<MapBaseScriptVer2>();
+        foreach (MapBaseScriptVer2 map in materials)
+        {
+            if (ResolveNextSceneIndex(map) != targetSceneIndex) continue;
+            sceneSpecificMaterials.Add(map);
+        }
+
+        return TrySelectMapMaterial(sceneSpecificMaterials, mapNumber, connectionDirection, failedLoopholes, false, out selectedMap);
+    }
+
+    bool TryTakeBranchSeed(MapBaseScriptVer2 branchBaseMap, ref bool usePrimaryBranchSeed, Vector3 primarySaveVec, Vector3 primaryMapPosition, int primaryTrueNum, out BranchSeed branchSeed)
+    {
+        if (usePrimaryBranchSeed)
+        {
+            usePrimaryBranchSeed = false;
+            branchSeed = new BranchSeed
+            {
+                SaveVec = primarySaveVec,
+                MapPosition = primaryMapPosition,
+                TrueNum = primaryTrueNum
+            };
+            return true;
+        }
+
+        while (Fails.Count > 0)
+        {
+            int preferredFailIndex = Fails.FindIndex(fail => fail.BaseMap == branchBaseMap);
+            int failIndex = preferredFailIndex >= 0 ? preferredFailIndex : 0;
+
+            FailLoophoolClass fail = Fails[failIndex];
+            Fails.RemoveAt(failIndex);
+
+            if (TryCreateBranchSeedFromFail(fail, out branchSeed))
+            {
+                return true;
+            }
+        }
+
+        branchSeed = null;
+        return false;
+    }
+
+    bool TryCreateBranchSeedFromFail(FailLoophoolClass fail, out BranchSeed branchSeed)
+    {
+        branchSeed = null;
+        if (fail == null || fail.BaseMap == null) return false;
+
+        Vector3 failMapNumber = fail.BaseMap.MapNumber;
+        foreach (MapExitClass exit in fail.BaseMap.MapInfo.MapExits)
+        {
+            if (exit.ExitNum == fail.ExitNum && exit.fromNum == fail.BaseMap.EnterNum)
+            {
+                failMapNumber += exit.ExitVec;
+                branchSeed = new BranchSeed
+                {
+                    SaveVec = fail.ExitPos,
+                    MapPosition = failMapNumber,
+                    TrueNum = fail.ExitNum
+                };
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    TrueEndBranchResult TryGenerateTrueEndBranch(BranchSeed branchSeed, List<MapBaseScriptVer2> enemyMapMaterials, List<MapBaseScriptVer2> normalMapMaterials, List<MapBaseScriptVer2> remainingEnds, int targetSceneIndex, List<EnemySpawnClass> enemySpawns, List<Transform> treasureSpawns)
+    {
+        int ran = UnityEngine.Random.Range(MiniMapCountMin, MiniMapCountMax);
+        int branchTrueNum = branchSeed.TrueNum;
+        Vector3 branchMapNumber = branchSeed.MapPosition;
+        Vector3 branchSaveVec = branchSeed.SaveVec;
+        bool hasInstantiatedBranchMap = false;
+
+        while (ran > 0)
+        {
+            MapBaseScriptVer2 selectMaterial = null;
+            if (!TrySelectMapMaterial(enemyMapMaterials, branchMapNumber, branchTrueNum, Fails, true, out selectMaterial) &&
+                !TrySelectMapMaterial(normalMapMaterials, branchMapNumber, branchTrueNum, Fails, true, out selectMaterial))
+            {
+                CloseBranchWithMiniEnd(branchMapNumber, branchSaveVec, branchTrueNum, treasureSpawns);
+                return hasInstantiatedBranchMap ? TrueEndBranchResult.ClosedCommittedBranch : TrueEndBranchResult.CouldNotCommitBranch;
+            }
+
+            MapBaseScriptVer2 generatedMap = InstantiateConnectedMap(selectMaterial, branchMapNumber, branchSaveVec, branchTrueNum);
+            // ここに到達した時点で、この seed を使った枝は実際に盤面へ展開済み。
+            // 以降に失敗しても別 seed へ乗り換えず、この枝を mini end で閉じて終了させる。
+            hasInstantiatedBranchMap = true;
+            CollectEnemySpawns(generatedMap, enemySpawns);
+            CollectTreasureSpawns(generatedMap, treasureSpawns);
+
+            Transform nextLoophole = generatedMap.SelectTrueLoophole(MapNumbers, branchMapNumber, Fails);
+            if (nextLoophole == null)
+            {
+                CloseBranchWithMiniEnd(branchMapNumber, branchSaveVec, branchTrueNum, treasureSpawns);
+                return TrueEndBranchResult.ClosedCommittedBranch;
+            }
+
+            branchSaveVec = nextLoophole.position;
+            branchTrueNum = generatedMap.TrueNum;
+            branchMapNumber = RematchMapNumber(branchTrueNum, generatedMap.EnterNum, branchMapNumber, generatedMap);
+            ran--;
+        }
+
+        if (TrySelectEndMapMaterial(remainingEnds, branchMapNumber, branchTrueNum, Fails, targetSceneIndex, out MapBaseScriptVer2 endMaterial))
+        {
+            MapBaseScriptVer2 generatedEnd = InstantiateConnectedMap(endMaterial, branchMapNumber, branchSaveVec, branchTrueNum);
+            AssignNextSceneToEndArea(generatedEnd, ResolveNextScene(endMaterial));
+            CollectTreasureSpawns(generatedEnd, treasureSpawns);
+            remainingEnds.Remove(endMaterial);
+            return TrueEndBranchResult.GeneratedTrueEnd;
+        }
+
+        CloseBranchWithMiniEnd(branchMapNumber, branchSaveVec, branchTrueNum, treasureSpawns);
+        return hasInstantiatedBranchMap ? TrueEndBranchResult.ClosedCommittedBranch : TrueEndBranchResult.CouldNotCommitBranch;
+    }
+
+    void CloseBranchWithMiniEnd(Vector3 mapNumber, Vector3 saveVec, int connectionDirection, List<Transform> treasureSpawns)
+    {
+        if (!TrySelectMapMaterial(MiniEnds, mapNumber, connectionDirection, Fails, false, out MapBaseScriptVer2 miniEnd)) return;
+
+        MapBaseScriptVer2 generatedMiniEnd = InstantiateConnectedMap(miniEnd, mapNumber, saveVec, connectionDirection);
+        CollectTreasureSpawns(generatedMiniEnd, treasureSpawns);
+    }
+
+    MapBaseScriptVer2 InstantiateConnectedMap(MapBaseScriptVer2 mapMaterial, Vector3 mapNumber, Vector3 saveVec, int connectionDirection)
+    {
+        MapBaseScriptVer2 generatedMap = Instantiate(mapMaterial.gameObject, MapParent).GetComponent<MapBaseScriptVer2>();
+        GeneratedMaps.Add(generatedMap);
+
+        Transform loopHoleVec = transform;
+        foreach (MapLoopholeVer2 hole in generatedMap.Loopholes) hole.CenterToThisLoopHole = generatedMap.transform.position - hole.transform.position;
+        foreach (MapLoopholeVer2 hole in generatedMap.Loopholes)
+        {
+            if (MatchMapNum(connectionDirection, hole.num))
+            {
+                loopHoleVec = hole.transform;
+                generatedMap.Loopholes.Remove(hole);
+                generatedMap.MapInfo.Neighbor[ReverseNum(connectionDirection)] = 0;
+                break;
+            }
+        }
+
+        generatedMap.SaveMapNumbers(MapNumbers, mapNumber, ReverseNum(connectionDirection));
+        generatedMap.MapNumber = mapNumber;
+        generatedMap.CenterToStart = generatedMap.transform.position - loopHoleVec.position;
+        loopHoleVec.position = saveVec;
+        generatedMap.transform.position = saveVec + generatedMap.CenterToStart;
+        loopHoleVec.position = saveVec;
+
+        return generatedMap;
+    }
+
+    void AssignNextSceneToEndArea(MapBaseScriptVer2 generatedEnd, SceneObject nextScene)
+    {
+        if (generatedEnd == null)
+        {
+            Debug.LogWarning("Generated end map is missing while assigning the next scene.");
+            return;
+        }
+        if (nextScene == null)
+        {
+            Debug.LogWarning($"Next scene reference is missing for end map {generatedEnd.name}.");
+            return;
+        }
+        if (string.IsNullOrEmpty(nextScene.m_SceneName))
+        {
+            Debug.LogWarning($"Next scene name is empty for end map {generatedEnd.name}.");
+            return;
+        }
+
+        StageEndArea[] endAreas = generatedEnd.GetComponentsInChildren<StageEndArea>(true);
+        if (endAreas.Length == 0)
+        {
+            Debug.LogWarning($"StageEndArea is missing on generated end map {generatedEnd.name}.");
+            return;
+        }
+
+        foreach (StageEndArea endArea in endAreas)
+        {
+            endArea.NextScene = nextScene;
+        }
+    }
+
     bool TrySelectMapMaterial(List<MapBaseScriptVer2> materials, Vector3 mapNumber, int connectionDirection, List<FailLoophoolClass> failedLoopholes, bool requireNextPoint, out MapBaseScriptVer2 selectedMap)
     {
         List<MapBaseScriptVer2> copyMaterials = new List<MapBaseScriptVer2>(materials);
@@ -838,6 +1097,20 @@ public class FailLoophoolClass{
     public int ExitNum;
     public MapBaseScriptVer2 BaseMap;
     public Vector3 ExitPos;
+}
+
+public class BranchSeed
+{
+    public int TrueNum;
+    public Vector3 MapPosition;
+    public Vector3 SaveVec;
+}
+
+public enum TrueEndBranchResult
+{
+    CouldNotCommitBranch,
+    ClosedCommittedBranch,
+    GeneratedTrueEnd
 }
 
 [System.Serializable]
