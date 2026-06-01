@@ -368,7 +368,7 @@ public class MapGeneraterVer2 : MonoBehaviour
                     }
 
                     // 途中まで生成した枝は mini end で閉じた時点で確定させる。
-                    // そのうえで未使用の seed が残っている限り別枝として再挑戦し、
+                    // そのうえで continue によって同じ targetSceneIndex のまま次の未使用 seed を試し、
                     // NextScenes に設定した種類数ぶんの true end を確保できるようにする。
                     if (branchResult == TrueEndBranchResult.ClosedCommittedBranch)
                     {
