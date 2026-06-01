@@ -341,10 +341,10 @@ public class MapGeneraterVer2 : MonoBehaviour
 
         //ゴールの生成
         List<MapBaseScriptVer2> remainingEnds = new List<MapBaseScriptVer2>(Ends);
-        List<int> compatibleEndSceneIndices = GetCompatibleEndSceneIndices(remainingEnds, TrueNum);
-        if (compatibleEndSceneIndices.Count <= 1)
+        List<int> targetEndSceneIndices = GetConfiguredEndSceneIndices(remainingEnds);
+        if (targetEndSceneIndices.Count <= 1)
         {
-            int targetSceneIndex = compatibleEndSceneIndices.Count > 0 ? compatibleEndSceneIndices[0] : -1;
+            int targetSceneIndex = targetEndSceneIndices.Count > 0 ? targetEndSceneIndices[0] : -1;
             if (TrySelectEndMapMaterial(remainingEnds, MapNumber, TrueNum, Fails, targetSceneIndex, out MapBaseScriptVer2 endMaterial))
             {
                 MapBaseScriptVer2 generatedEnd = InstantiateConnectedMap(endMaterial, MapNumber, SaveVec, TrueNum);
@@ -355,7 +355,7 @@ public class MapGeneraterVer2 : MonoBehaviour
         else
         {
             bool usePrimaryBranchSeed = true;
-            foreach (int targetSceneIndex in compatibleEndSceneIndices)
+            foreach (int targetSceneIndex in targetEndSceneIndices)
             {
                 bool generatedTrueEnd = false;
                 while (TryTakeBranchSeed(lastMainMap, ref usePrimaryBranchSeed, SaveVec, MapNumber, TrueNum, out BranchSeed branchSeed))
@@ -367,19 +367,18 @@ public class MapGeneraterVer2 : MonoBehaviour
                         break;
                     }
 
-                    // 途中まで枝を伸ばしたあとは、その枝を mini end で閉じて確定させている。
-                    // ここで別 seed に切り替えると「生成途中で別の道に乗り換える」挙動になるため、
-                    // 何か 1 マップでも生成した枝については再試行せず、次の分岐先判定へ進む。
+                    // 途中まで生成した枝は mini end で閉じた時点で確定させる。
+                    // そのうえで未使用の seed が残っている限り別枝として再挑戦し、
+                    // NextScenes に設定した種類数ぶんの true end を確保できるようにする。
                     if (branchResult == TrueEndBranchResult.ClosedCommittedBranch)
                     {
-                        break;
+                        continue;
                     }
                 }
 
                 if (!generatedTrueEnd)
                 {
-                    Debug.LogWarning("Could not generate additional true end branch.");
-                    break;
+                    Debug.LogWarning($"Could not generate true end branch for scene index {targetSceneIndex}.");
                 }
             }
         }
@@ -740,27 +739,17 @@ public class MapGeneraterVer2 : MonoBehaviour
         }
     }
 
-    bool CanConnectToDirection(MapBaseScriptVer2 map, int connectionDirection)
-    {
-        foreach (MapLoopholeVer2 hole in map.Loopholes)
-        {
-            if (hole.num == ReverseNum(connectionDirection))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    List<int> GetCompatibleEndSceneIndices(List<MapBaseScriptVer2> materials, int connectionDirection)
+    List<int> GetConfiguredEndSceneIndices(List<MapBaseScriptVer2> materials)
     {
         List<int> sceneIndices = new List<int>();
+        if (NextScenes == null || NextScenes.Length == 0) return sceneIndices;
+
         foreach (MapBaseScriptVer2 map in materials)
         {
-            if (!CanConnectToDirection(map, connectionDirection)) continue;
-
             int sceneIndex = ResolveNextSceneIndex(map);
+            if (sceneIndex < 0 || sceneIndex >= NextScenes.Length) continue;
+            SceneObject nextScene = NextScenes[sceneIndex];
+            if (nextScene == null || string.IsNullOrEmpty(nextScene.m_SceneName)) continue;
             if (!sceneIndices.Contains(sceneIndex))
             {
                 sceneIndices.Add(sceneIndex);
@@ -963,12 +952,15 @@ public class MapGeneraterVer2 : MonoBehaviour
             return;
         }
 
-        foreach (Transform child in generatedEnd.GetComponentsInChildren<Transform>(true))
+        StageEndArea[] endAreas = generatedEnd.GetComponentsInChildren<StageEndArea>(true);
+        if (endAreas.Length == 0)
         {
-            if (!child.CompareTag("EndArea")) continue;
+            Debug.LogWarning($"StageEndArea is missing on generated end map {generatedEnd.name}.");
+            return;
+        }
 
-            StageEndArea endArea = child.GetComponent<StageEndArea>();
-            if (endArea == null) endArea = child.gameObject.AddComponent<StageEndArea>();
+        foreach (StageEndArea endArea in endAreas)
+        {
             endArea.NextScene = nextScene;
         }
     }
