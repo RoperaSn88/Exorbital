@@ -22,6 +22,7 @@ public class ControlTextChanger : MonoBehaviour,IChangerUI
 
         if (_legacyTexts == null || num < 0 || num >= _legacyTexts.Length)
         {
+            Debug.LogWarning($"Legacy controller text index out of range: {num}", this);
             tmp.text = string.Empty;
             return;
         }
