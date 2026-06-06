@@ -23,7 +23,7 @@ public class ControllerTextData : ScriptableObject
             return string.Empty;
         }
 
-        // Japanese/English only. Other languages use Japanese as the primary language.
+        // Japanese/English only. Non-English languages use Japanese first, then English as fallback.
         bool isEnglish = language == SystemLanguage.English;
         string[] primaryTexts = isEnglish ? _englishTexts : _japaneseTexts;
         string[] fallbackTexts = isEnglish ? _japaneseTexts : _englishTexts;
@@ -39,7 +39,7 @@ public class ControllerTextData : ScriptableObject
 
     private static string GetTextFromArray(string[] texts, int index)
     {
-        if (texts == null || index >= texts.Length) return string.Empty;
+        if (texts == null || index < 0 || index >= texts.Length) return string.Empty;
         return texts[index];
     }
 
