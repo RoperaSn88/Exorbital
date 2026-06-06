@@ -17,8 +17,8 @@ public class yakekusoManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI _versionText;
     [SerializeField] TextMeshProUGUI _controllText;
     [SerializeField] OperationInstructionTextMasterData _operationTexts;
-    [SerializeField] string[] controlTextIDs = new string[3];
-    [TextArea, SerializeField] string[] controlTexts = new string[3];
+    [SerializeField] string[] controlTextIDs;
+    [TextArea, SerializeField] string[] controlTexts;
 
     public RectTransform Icon;
     [SerializeField] GameObject _attentionPanel;
@@ -87,10 +87,11 @@ public class yakekusoManager : MonoBehaviour
 
     void ChangeText(int num)
     {
+        if (controlTexts == null) return;
         if (num < 0 || num >= controlTexts.Length) return;
 
         string defaultText = controlTexts[num];
-        if (_operationTexts && num < controlTextIDs.Length && !string.IsNullOrEmpty(controlTextIDs[num]))
+        if (_operationTexts && controlTextIDs != null && num < controlTextIDs.Length && !string.IsNullOrEmpty(controlTextIDs[num]))
         {
             _controllText.text = _operationTexts.GetText(controlTextIDs[num], defaultText);
             return;

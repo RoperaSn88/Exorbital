@@ -10,16 +10,22 @@ public class LocalizedTextData
     [TextArea]
     public string English;
 
-    public string GetText()
+    public string GetText(string defaultText = "")
     {
+        string targetText;
         if (staticScript.Language == LanguageKinds.English)
         {
-            if (string.IsNullOrEmpty(English)) return Japanese;
-            return English;
+            targetText = English;
+            if (string.IsNullOrEmpty(targetText)) targetText = Japanese;
+        }
+        else
+        {
+            targetText = Japanese;
+            if (string.IsNullOrEmpty(targetText)) targetText = English;
         }
 
-        if (string.IsNullOrEmpty(Japanese)) return English;
-        return Japanese;
+        if (string.IsNullOrEmpty(targetText)) return defaultText;
+        return targetText;
     }
 }
 
@@ -45,7 +51,7 @@ public class LocalizedTextMasterDataBase : ScriptableObject
             }
         }
 
-        if (_cache.TryGetValue(id, out var data)) return data.GetText();
+        if (_cache.TryGetValue(id, out var data)) return data.GetText(defaultText);
         return defaultText;
     }
 }
