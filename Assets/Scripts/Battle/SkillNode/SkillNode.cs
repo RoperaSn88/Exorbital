@@ -35,6 +35,8 @@ public class SkillNode : ScriptableObject
     public valueKinds valueKind;
     public float value;
     public bool isLock = false;
+    [Header("Localization")]
+    public string ExplainTextID;
     [TextArea]
     public string ExplainText;
     public OrbClass needOrbs;

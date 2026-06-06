@@ -8,6 +8,7 @@ public class TutorialManager : MonoBehaviour
 {
     public static TutorialManager Instance { get; private set;}
     public TutorialParts BeginPart;
+    public string SceneNameID = "TUTORIAL_STAGE";
     public String SceneName = "チュートリアル";
     public AudioClip music = null;
     public SceneObject thisScene;

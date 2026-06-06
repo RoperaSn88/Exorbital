@@ -25,6 +25,7 @@ public class MapGeneraterVer2 : MonoBehaviour
     public SpecificMapInfo SpecificMapInfo;
     public List<MapBaseScriptVer2> ChallengeMaps;
     [Header("ここからはステージの情報")]
+    public string StageNameID;
     public String StageName;
     public List<GameObject> Enemys;
     public List<GameObject> EliteEnemys;

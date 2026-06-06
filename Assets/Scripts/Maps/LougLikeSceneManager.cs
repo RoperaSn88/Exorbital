@@ -35,6 +35,7 @@ public class LougLikeSceneManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI levelText;
     [SerializeField] GameObject[] ExpOrb;
     public List<SkillData> AllSkills;
+    [SerializeField] SkillTextMasterData _skillTexts;
     public SkillPanelScript SkillPanel;
     [SerializeField] Transform SkillGainParent;
     public SkillGainPanelScript SkillGainPanelS;
@@ -363,8 +364,10 @@ public class LougLikeSceneManager : MonoBehaviour
     {
         SkillData skill = new SkillData();
 
-        skill.Name = BaseSkill.Name;
-        skill.Introduct = BaseSkill.Introduct;
+        skill.NameTextID = BaseSkill.NameTextID;
+        skill.IntroductTextID = BaseSkill.IntroductTextID;
+        skill.Name = _skillTexts ? _skillTexts.GetText(BaseSkill.NameTextID, BaseSkill.Name) : BaseSkill.Name;
+        skill.Introduct = _skillTexts ? _skillTexts.GetText(BaseSkill.IntroductTextID, BaseSkill.Introduct) : BaseSkill.Introduct;
         skill.NeedMP = BaseSkill.NeedMP;
         skill.ID = BaseSkill.ID;
         skill.PlusDamage = BaseSkill.PlusDamage;

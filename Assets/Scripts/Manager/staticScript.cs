@@ -1,5 +1,11 @@
 using UnityEngine;
 
+public enum LanguageKinds
+{
+    Japanese,
+    English,
+}
+
 public static class staticScript
 {
     public static int _dataNumber;
@@ -10,6 +16,7 @@ public static class staticScript
     public static bool ImmeLevel = false;
     public static float _bgmVolume;
     public static float _seVolume;
+    public static LanguageKinds Language = LanguageKinds.Japanese;
 
     public static bool checkTutorial()
     {
