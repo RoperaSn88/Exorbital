@@ -23,14 +23,18 @@ public class ControllerTextData : ScriptableObject
             return string.Empty;
         }
 
+        // Japanese/English only. Other languages use Japanese as the primary language.
         bool isEnglish = language == SystemLanguage.English;
-        string text = GetTextFromArray(isEnglish ? _englishTexts : _japaneseTexts, index);
+        string[] primaryTexts = isEnglish ? _englishTexts : _japaneseTexts;
+        string[] fallbackTexts = isEnglish ? _japaneseTexts : _englishTexts;
+
+        string text = GetTextFromArray(primaryTexts, index);
         if (!string.IsNullOrEmpty(text))
         {
             return text;
         }
 
-        return GetTextFromArray(isEnglish ? _japaneseTexts : _englishTexts, index);
+        return GetTextFromArray(fallbackTexts, index);
     }
 
     private static string GetTextFromArray(string[] texts, int index)
