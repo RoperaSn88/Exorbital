@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2f68a916f744d0f86756e5424f429f6, type: 3}
+  m_Name: CTD_KeyGuide
+  m_EditorClassIdentifier: 
+  _japaneseTexts:
+  - "W/A/S/D\nQ/E\nJ\nI\nSpace\nK\nK→WASD\nO\nO"
+  - "<sprite name=\"key_leftStick\">\n<sprite name=\"key_rightStick\">\n<sprite name=\"key_x\">\n<sprite name=\"key_y\">\n<sprite name=\"key_a\">\n<sprite name=\"key_rb\">\n<sprite name=\"key_rb\"> →<sprite name=\"key_leftStick\">\n<sprite name=\"key_lt\">\n<sprite name=\"key_rt\">"
+  - "<sprite name=\"key_leftStick\">\n<sprite name=\"key_rightStick\">\n<sprite name=\"key_square\">\n<sprite name=\"key_triangle\">\n<sprite name=\"key_cross\">\n<sprite name=\"key_r1\">\n<sprite name=\"key_r1\"> →<sprite name=\"key_leftStick\">\n<sprite name=\"key_l2\">\n<sprite name=\"key_r2\">"
+  _englishTexts:
+  - "W/A/S/D\nQ/E\nJ\nI\nSpace\nK\nK→WASD\nO\nO"
+  - "<sprite name=\"key_leftStick\">\n<sprite name=\"key_rightStick\">\n<sprite name=\"key_x\">\n<sprite name=\"key_y\">\n<sprite name=\"key_a\">\n<sprite name=\"key_rb\">\n<sprite name=\"key_rb\"> →<sprite name=\"key_leftStick\">\n<sprite name=\"key_lt\">\n<sprite name=\"key_rt\">"
+  - "<sprite name=\"key_leftStick\">\n<sprite name=\"key_rightStick\">\n<sprite name=\"key_square\">\n<sprite name=\"key_triangle\">\n<sprite name=\"key_cross\">\n<sprite name=\"key_r1\">\n<sprite name=\"key_r1\"> →<sprite name=\"key_leftStick\">\n<sprite name=\"key_l2\">\n<sprite name=\"key_r2\">"
