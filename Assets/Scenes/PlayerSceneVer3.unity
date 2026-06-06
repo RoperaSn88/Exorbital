@@ -6436,6 +6436,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tmp: {fileID: 543875247}
+  _textData: {fileID: 11400000, guid: 5e4ad4604d644244962f6264b16f56dc, type: 2}
   _texts:
   - 
   - 
@@ -7315,6 +7316,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tmp: {fileID: 609901316}
+  _textData: {fileID: 11400000, guid: 16b3d0d2b8f64711a6f510be2da6f013, type: 2}
   _texts:
   - "A/D\u3067\u9078\u629E \u30B9\u30DA\u30FC\u30B9\u3067\u6C7A\u5B9A"
   - "\u5DE6\u30B9\u30C6\u30A3\u30C3\u30AF\u3067\u9078\u629E X\u3067\u6C7A\u5B9A"
@@ -13394,6 +13396,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tmp: {fileID: 1282424544}
+  _textData: {fileID: 11400000, guid: 2679f36a54da4f2c83c7104a337eb706, type: 2}
   _texts:
   - "W/S\u3067\u9078\u629E\u3000J\u3067\u767A\u52D5\u3000I\u3067\u3084\u3081\u308B"
   - "\u5DE6\u30B9\u30C6\u30A3\u30C3\u30AF\u3067\u9078\u629E\u3000X\u3067\u767A\u52D5\u3000Y\u3067\u3084\u3081\u308B"
@@ -17900,6 +17903,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tmp: {fileID: 1827811702}
+  _textData: {fileID: 11400000, guid: 77a61c6c5b4b4bc2bf53e2a6c0f73ea6, type: 2}
   _texts:
   - "W/S\u3067\u9078\u629E \u30B9\u30DA\u30FC\u30B9\u3067\u6C7A\u5B9A L\u3067\u623B\u308B"
   - "\u5DE6\u30B9\u30C6\u30A3\u30C3\u30AF\u3067\u9078\u629E\u3000A\u3067\u6C7A\u5B9A
@@ -21180,6 +21184,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tmp: {fileID: 2085426939}
+  _textData: {fileID: 11400000, guid: e2d8e31fdbf24592be06c7ce8065d833, type: 2}
   _texts:
   - "W/A/S/D\nQ/E\nJ\nI\nSpace\nK\nK\u2192WASD\nO\nO"
   - "<sprite name=\"key_leftStick\">\n<sprite name=\"key_rightStick\">\n<sprite name=\"key_x\">\n<sprite
