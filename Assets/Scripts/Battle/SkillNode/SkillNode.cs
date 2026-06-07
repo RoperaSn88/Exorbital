@@ -36,9 +36,15 @@ public class SkillNode : ScriptableObject
     public float value;
     public bool isLock = false;
     [Header("Localization")]
+    public string LevelTextID;
+    [TextArea]
+    public string LevelText;
     public string ExplainTextID;
     [TextArea]
     public string ExplainText;
+    public string NoNextNodeTextID;
+    [TextArea]
+    public string NoNextNodeText = "なし";
     public OrbClass needOrbs;
     public SkillNode childNode;
     public virtual void SkillAction(ForBattleData baseData)
