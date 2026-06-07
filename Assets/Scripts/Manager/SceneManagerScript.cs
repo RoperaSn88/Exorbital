@@ -69,6 +69,9 @@ public class SceneManagerScript : MonoBehaviour
     [SerializeField] TextMeshProUGUI KillText;
     [SerializeField] TextMeshProUGUI StageText;
     [SerializeField] TextMeshProUGUI SerihuText;
+    [SerializeField] SkillTextMasterData _skillTexts;
+    [SerializeField] SkillNodeTextMasterData _skillNodeTexts;
+    [SerializeField] StageTextMasterData _stageTexts;
     bool timerF;
     float LowSTimer;
     int sTimer;
@@ -195,7 +198,14 @@ public class SceneManagerScript : MonoBehaviour
         timerF = true;
         StageText.DOFade(1, 0.01f);
         StageText.rectTransform.anchoredPosition = new Vector3(200, 60, 0);
-        StageText.text = gen? gen.StageName:Tutorial.SceneName;
+        if (gen)
+        {
+            StageText.text = _stageTexts ? _stageTexts.GetText(gen.StageNameID, gen.StageName) : gen.StageName;
+        }
+        else
+        {
+            StageText.text = _stageTexts ? _stageTexts.GetText(Tutorial.SceneNameID, Tutorial.SceneName) : Tutorial.SceneName;
+        }
         StageText.rectTransform.DOAnchorPosX(-200, 0.75f).SetEase(Ease.OutQuad);
         StageText.DOFade(1f, 1.5f).OnComplete(() => StageText.DOFade(0, 1.0f));
         //背景設定　チュートリアルステージならばtrue
@@ -945,8 +955,10 @@ public class SceneManagerScript : MonoBehaviour
         //SkillDataを種類分けしておきたいのだが、生成をどうするか...
         SkillData skill = ScriptableObject.CreateInstance<SkillData>();
         skill.Kind = BaseSkill.Kind;
-        skill.Name = BaseSkill.Name;
-        skill.Introduct = BaseSkill.Introduct;
+        skill.NameTextID = BaseSkill.NameTextID;
+        skill.IntroductTextID = BaseSkill.IntroductTextID;
+        skill.Name = _skillTexts ? _skillTexts.GetText(BaseSkill.NameTextID, BaseSkill.Name) : BaseSkill.Name;
+        skill.Introduct = _skillTexts ? _skillTexts.GetText(BaseSkill.IntroductTextID, BaseSkill.Introduct) : BaseSkill.Introduct;
         skill.NeedMP = BaseSkill.NeedMP;
         skill.ID = BaseSkill.ID;
         skill.NeedOrbs = BaseSkill.NeedOrbs;
@@ -1140,24 +1152,24 @@ public class SceneManagerScript : MonoBehaviour
             {
                 case 0:
                     //0は緑
-                    SkillNodeInfos.selectOrbText.text = "緑石レベル";
                     targetSkillNode = SkillTreeManager.Instance.NowGreenNode;
+                    SkillNodeInfos.selectOrbText.text = GetSkillNodeLevelText(targetSkillNode, "緑石レベル");
                     break;
                 case 1:
                     //1は赤
-                    SkillNodeInfos.selectOrbText.text = "赤石レベル";
                     targetSkillNode = SkillTreeManager.Instance.NowRedNode;
+                    SkillNodeInfos.selectOrbText.text = GetSkillNodeLevelText(targetSkillNode, "赤石レベル");
                     break;
                 case 2:
                     //2は青
-                    SkillNodeInfos.selectOrbText.text = "青石レベル";
                     targetSkillNode = SkillTreeManager.Instance.NowBlueNode;
+                    SkillNodeInfos.selectOrbText.text = GetSkillNodeLevelText(targetSkillNode, "青石レベル");
                     break;
             }
             if (targetSkillNode.childNode)
             {
                 nextTargetNode = targetSkillNode.childNode;
-                SkillNodeInfos.nextNodeExplainText.text = nextTargetNode.ExplainText;
+                SkillNodeInfos.nextNodeExplainText.text = _skillNodeTexts ? _skillNodeTexts.GetText(nextTargetNode.ExplainTextID, nextTargetNode.ExplainText) : nextTargetNode.ExplainText;
                 SkillNodeInfos.nowLevelText.text = $"{SkillTreeManager.Instance.NodeCounts[selectNum]}";
                 SkillNodeInfos.nextLevelText.text = $"{SkillTreeManager.Instance.NodeCounts[selectNum] + 1}";
                 SkillNodeInfos.NeedOrbsText[0].text = $"{nextTargetNode.needOrbs.green}/{ForBattleData.instance.OrbPieces.green}";
@@ -1173,7 +1185,7 @@ public class SceneManagerScript : MonoBehaviour
             else
             {
                 nextTargetNode = null;
-                SkillNodeInfos.nextNodeExplainText.text = "なし";
+                SkillNodeInfos.nextNodeExplainText.text = GetSkillNodeNoneText(targetSkillNode, "なし");
                 SkillNodeInfos.nowLevelText.text = $"{SkillTreeManager.Instance.NodeCounts[selectNum]}";
                 SkillNodeInfos.nextLevelText.text = $"{SkillTreeManager.Instance.NodeCounts[selectNum] + 1}";
                 SkillNodeInfos.NeedOrbsText[0].text = $"0/{ForBattleData.instance.OrbPieces.green}";
@@ -1294,6 +1306,20 @@ public class SceneManagerScript : MonoBehaviour
         VisibleUIs();
         PlayerController.instance.StartGravity();
         PlayerController.instance.StartController();
+    }
+
+    string GetSkillNodeLevelText(SkillNode node, string defaultText)
+    {
+        if (node == null) return defaultText;
+        var fallbackText = string.IsNullOrEmpty(node.LevelText) ? defaultText : node.LevelText;
+        return _skillNodeTexts ? _skillNodeTexts.GetText(node.LevelTextID, fallbackText) : fallbackText;
+    }
+
+    string GetSkillNodeNoneText(SkillNode node, string defaultText)
+    {
+        if (node == null) return defaultText;
+        var fallbackText = string.IsNullOrEmpty(node.NoNextNodeText) ? defaultText : node.NoNextNodeText;
+        return _skillNodeTexts ? _skillNodeTexts.GetText(node.NoNextNodeTextID, fallbackText) : fallbackText;
     }
 
     bool checkOrb(OrbClass left, OrbClass right)

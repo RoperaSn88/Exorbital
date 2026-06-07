@@ -12,6 +12,9 @@ public class SkillData : ScriptableObject
         Magic,
     }
     public Kinds Kind;
+    [Header("Localization")]
+    public string NameTextID;
+    public string IntroductTextID;
     public string Name;
     public string Introduct;
     public int NeedMP;
